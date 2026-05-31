@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>System Health Checker - BSI Haji Portal</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#59dacd",
+                        "primary-fixed": "#78f7e9",
+                        "tertiary-fixed": "#e4e2e1",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-dim": "#d9dadb",
+                        "tertiary-fixed-dim": "#c8c6c6",
+                        "on-secondary-fixed": "#251a00",
+                        "secondary-fixed": "#ffdf99",
+                        "outline": "#6c7a77",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#3c4947",
+                        "primary-fixed-dim": "#59dacd",
+                        "primary": "#006a62",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#2f2f2f",
+                        "on-secondary-container": "#715600",
+                        "primary-container": "#00a99d",
+                        "on-primary-fixed-variant": "#00504a",
+                        "inverse-surface": "#2e3132",
+                        "surface": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-primary-container": "#003631",
+                        "secondary": "#775a00",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-container": "#edeeef",
+                        "secondary-fixed-dim": "#f2c03a",
+                        "error": "#ba1a1a",
+                        "background": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "tertiary": "#5f5e5e",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#bbc9c6",
+                        "on-secondary-fixed-variant": "#5a4300",
+                        "surface-tint": "#006a62",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-container": "#fecb44",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "tertiary-container": "#989696",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed": "#00201d",
+                        "surface-container-low": "#f3f4f5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "42px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base styles mapped from system */
+        body {
+            background-color: #f8f9fa; /* surface */
+            color: #191c1d; /* on-surface */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Ambient shadow utility from guidance Level 1 */
+        .ambient-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopNavBar (Fixed, full width) -->
+<header class="fixed w-full z-50 bg-surface dark:bg-inverse-surface shadow-sm docked full-width top-0">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto h-20">
+<!-- Brand -->
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="mosque" style="font-variation-settings: 'FILL' 1;">mosque</span>
+                BSI Haji Portal
+            </div>
+<!-- Nav Links (Hidden on mobile for this specific layout, assumed managed by SideNav on desktop, but rendering as per JSON for completeness if space permits, prioritizing semantic active state) -->
+<nav class="hidden md:flex gap-8 items-center h-full">
+<a class="h-full flex items-center text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary pb-1 font-bold font-label-md text-label-md" href="#">Dashboard</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors font-label-md text-label-md" href="#">Mutasi</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors font-label-md text-label-md" href="#">Estimasi Keberangkatan</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button aria-label="notifications" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="help" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
+<button class="hidden md:block bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 active:scale-95 transition-transform">
+                    Buka Rekening
+                </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant ml-2">
+<!-- Placeholder profile -->
+<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcfr3uQF6rAD8YWVEBB4H0hL2UZ43gK0QS2-fn-Za7IXnBB5V6_mp5jt_qi7ZhgqVtr1IblqoH54kyZK4KgHXmVUfd05Qsu7EYoh8ay2AAh7uUJbV20MVtfs91cgnjQVA1Mj7tt3Rk6o1Xa8st-eJTK1JqpbyJLtjTsYUIvAncdmSFgZeQYFtfBC7LQIfREwDGTQ-2y0IEhWtDaZbuXInIgVBwLt8lB2QyHyICeRTO-bc0OMj1waLeDQ3cr1LHnrc3gU2KQVO6dvw"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 pt-20">
+<!-- SideNavBar (Fixed left, visible on md+) -->
+<aside class="hidden md:flex h-[calc(100vh-80px)] w-64 fixed left-0 top-20 bg-surface-container-low dark:bg-surface-container-lowest border-r border-outline-variant flex-col p-4 space-y-2 z-40 overflow-y-auto">
+<div class="mb-8 px-4 py-2">
+<h2 class="font-headline-sm text-headline-sm font-bold text-primary">Haji Indonesia</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Modern-Spiritual Banking</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold font-label-md text-label-md active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+                    Riwayat Transaksi
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+                    Estimasi Haji
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                    Dokumen
+                </a>
+</nav>
+<div class="mt-auto pt-4 border-t border-outline-variant">
+<button class="w-full bg-primary-container text-on-primary-container px-4 py-3 rounded-lg font-label-md text-label-md font-bold hover:opacity-90 transition-opacity">
+                    Top Up Tabungan
+                </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-margin-mobile md:p-margin-desktop bg-surface min-h-full">
+<div class="max-w-container-max mx-auto space-y-8">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">API System Health</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="update">update</span>
+                            Last checked: <span class="font-medium" id="last-checked-time">Just now</span>
+</p>
+</div>
+<button class="flex items-center gap-2 bg-surface-container-lowest border-2 border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary-container transition-colors px-6 py-2.5 rounded-lg font-label-md text-label-md font-bold shadow-sm" onclick="refreshStatus()">
+<span class="material-symbols-outlined text-[20px]" data-icon="refresh">refresh</span>
+                        Check Again
+                    </button>
+</div>
+<!-- Summary Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Uptime Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 ambient-shadow flex flex-col justify-between border border-surface-variant relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container opacity-10 rounded-bl-full -mr-8 -mt-8"></div>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-2">Overall System Uptime</h3>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-display-lg text-primary">99.9%</span>
+<span class="font-body-md text-body-md text-primary mb-2 flex items-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="trending_up">trending_up</span>
+</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-4 opacity-70">Trailing 30 days</p>
+</div>
+<!-- Latency Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 ambient-shadow flex flex-col justify-between border border-surface-variant relative overflow-hidden">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-2">Average Latency</h3>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">45</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant mb-1">ms</span>
+</div>
+<div class="mt-4 w-full bg-surface-container-high rounded-full h-1.5">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 15%"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2 opacity-70">Optimal performance</p>
+</div>
+<!-- Active Connections -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 ambient-shadow flex flex-col justify-between border border-surface-variant relative overflow-hidden">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-2">Active Transactions</h3>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-display-lg text-on-surface">1,204</span>
+</div>
+<div class="flex items-center gap-2 mt-4 text-primary font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+                            Live traffic processing
+                        </div>
+</div>
+</section>
+<!-- Detailed Component Status List -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6">Component Status</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- API Backend -->
+<div class="bg-surface-container-lowest rounded-xl p-5 ambient-shadow border border-surface-variant flex items-center justify-between group hover:border-primary-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="cloud_done">cloud_done</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">API Backend</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Core tabungan routing</p>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-primary-container/10 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-md text-label-md font-bold text-primary">Online</span>
+</div>
+</div>
+<!-- Database -->
+<div class="bg-surface-container-lowest rounded-xl p-5 ambient-shadow border border-surface-variant flex items-center justify-between group hover:border-primary-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Database PostgreSQL</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Customer ledger records</p>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-primary-container/10 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-md text-label-md font-bold text-primary">Connected</span>
+</div>
+</div>
+<!-- Auth Service -->
+<div class="bg-surface-container-lowest rounded-xl p-5 ambient-shadow border border-surface-variant flex items-center justify-between group hover:border-primary-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Authentication Service</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Identity &amp; Access Auth</p>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-primary-container/10 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-md text-label-md font-bold text-primary">Running</span>
+</div>
+</div>
+<!-- Third-Party -->
+<div class="bg-surface-container-lowest rounded-xl p-5 ambient-shadow border border-surface-variant flex items-center justify-between group hover:border-primary-container transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Third-party Integrations</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">SISKOHAT Gateway</p>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-primary-container/10 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-md text-label-md font-bold text-primary">Operational</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-inverse-surface border-t border-outline-variant w-full mt-auto md:ml-64 md:w-[calc(100%-16rem)]">
+<div class="py-12 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<p class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+                © 2024 PT Bank Syariah Indonesia Tbk. Terdaftar dan diawasi oleh OJK. Peserta penjaminan LPS.
+            </p>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Syarat &amp; Ketentuan</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Kebijakan Privasi</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Kontak Kami</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Lokasi Cabang</a>
+</div>
+</div>
+</footer>
+<script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' });
+            document.getElementById('last-checked-time').textContent = "Today at " + timeString;
+        }
+
+        function refreshStatus() {
+            const btn = document.querySelector('button[onclick="refreshStatus()"]');
+            const icon = btn.querySelector('.material-symbols-outlined');
+            
+            // Visual feedback
+            icon.classList.add('animate-spin');
+            btn.classList.add('opacity-70', 'pointer-events-none');
+            
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                btn.classList.remove('opacity-70', 'pointer-events-none');
+                updateTime();
+                
+                // Add a subtle flash to the cards to indicate refresh
+                const cards = document.querySelectorAll('.ambient-shadow');
+                cards.forEach(card => {
+                    card.classList.add('bg-surface-container');
+                    setTimeout(() => card.classList.remove('bg-surface-container'), 300);
+                });
+            }, 800);
+        }
+
+        // Initialize time
+        updateTime();
+    </script>
+</body></html>

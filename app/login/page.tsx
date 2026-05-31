@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LoginForm } from "@/components/login-form";
 import { SystemStatus } from "@/components/system-status";
+import { GuestGuard } from "@/components/guest-guard";
 
 export const metadata: Metadata = {
   title: "Masuk — BSI Tabungan Haji",
@@ -12,6 +13,7 @@ const HERO_IMAGE =
 
 export default function LoginPage() {
   return (
+    <GuestGuard>
     <div className="flex h-screen w-full flex-col overflow-hidden bg-surface text-on-surface md:flex-row">
       {/* Pane kiri/atas: branding & imagery */}
       <div className="relative z-0 flex h-[307px] w-full flex-col justify-between overflow-hidden bg-primary-container p-6 md:h-full md:w-[45%] md:p-12 lg:w-[55%]">
@@ -91,5 +93,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </GuestGuard>
   );
 }

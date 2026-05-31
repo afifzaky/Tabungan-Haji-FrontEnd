@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BSI Tabungan Haji — Frontend
 
-## Getting Started
+Aplikasi web (Next.js 16 + React 19 + Tailwind CSS v4) untuk membuka dan
+memantau rekening Tabungan Haji: dashboard saldo, mutasi, estimasi
+keberangkatan, serta halaman **Kesehatan Sistem** (`/health`).
 
-First, run the development server:
+## Prasyarat
+
+- **Node.js 20+** dan **npm** (cek dengan `node -v` dan `npm -v`).
+- Backend `tabungan-haji-api` berjalan (default di `http://localhost:3000`).
+
+## Menjalankan dari hasil clone
 
 ```bash
+# 1. Clone & masuk ke folder
+git clone <url-repo> Tabungan-Haji-FrontEnd
+cd Tabungan-Haji-FrontEnd
+
+# 2. Pasang dependensi (otomatis baca package-lock.json)
+npm install
+
+# 3. Jalankan server pengembangan
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka **http://localhost:3001** di browser. Frontend berjalan di **port 3001**
+(sudah dikonfigurasi di `package.json`, sengaja berbeda dari backend di 3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Konfigurasi backend (opsional)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Frontend memanggil backend melalui variabel `NEXT_PUBLIC_API_URL`. Bila tidak
+diset, default-nya `http://localhost:3000/api/v1`. Untuk mengubahnya, buat file
+`.env.local` di root proyek:
 
-## Learn More
+```bash
+# .env.local
+NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
+```
 
-To learn more about Next.js, take a look at the following resources:
+> Catatan: file `.env*` diabaikan git (lihat `.gitignore`), jadi aman menyimpan
+> konfigurasi lokal di sini.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Halaman tersedia
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Rute         | Keterangan                                         |
+| ------------ | -------------------------------------------------- |
+| `/`          | Pengalih: ke `/dashboard` bila sudah login, lainnya ke `/login` |
+| `/login`     | Masuk                                              |
+| `/register`  | Pendaftaran nasabah baru                           |
+| `/dashboard` | Ringkasan rekening & estimasi (login, role NASABAH) |
+| `/mutasi`    | Riwayat transaksi + filter & pagination (login)    |
+| `/estimasi`  | Estimasi keberangkatan & analisis tabungan (login) |
+| `/admin/nasabah` | Manajemen nasabah — list/cari/hapus (login, role ADMIN) |
+| `/admin/nasabah/baru` | Form tambah nasabah (role ADMIN)          |
+| `/admin/nasabah/[id]` | Detail nasabah & rekening (role ADMIN)    |
+| `/admin/nasabah/[id]/edit` | Form edit nasabah (role ADMIN)       |
+| `/health`    | Kesehatan sistem — status real-time API (publik)   |
 
-## Deploy on Vercel
+Saat login, **role ADMIN** diarahkan ke `/admin/nasabah`, **role NASABAH** ke
+`/dashboard`. Area `/admin/*` dijaga `AdminGuard` (butuh token + role ADMIN).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> **Catatan backend (admin nasabah):** halaman admin memakai endpoint REST
+> standar yang diasumsikan: `GET /nasabah` (list), `GET /nasabah/:id` (detail,
+> opsional menyertakan `tabungan`/`transaksi`), `POST /nasabah` (buat),
+> `PUT /nasabah/:id` (ubah), `DELETE /nasabah/:id` (hapus). Bila kontrak backend
+> berbeda, sesuaikan path di `lib/api.ts` (fungsi `listNasabah`, `getNasabah`,
+> `createNasabah`, `updateNasabah`, `deleteNasabah`).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Halaman `/health` mem-probe endpoint `/health` backend secara langsung dari
+browser, menampilkan status tiap komponen beserta latensi respons. Tombol
+**Cek Ulang** menjalankan ulang pemeriksaan.
+
+## Perintah lain
+
+```bash
+npm run build   # build produksi
+npm run start   # jalankan hasil build
+npm run lint    # cek ESLint
+```
+
+## Troubleshooting
+
+- **Port 3001 sudah dipakai** → hentikan proses yang memakai port itu, atau ubah
+  `-p 3001` pada skrip `dev` di `package.json`.
+- **Status di `/health` "Tidak Tersedia"** → pastikan backend menyala dan
+  `NEXT_PUBLIC_API_URL` menunjuk ke alamat yang benar.

@@ -2,91 +2,52 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
+  ApiError,
+  errorMessage,
   getEstimasi,
-  getMutasi,
-  getStoredNasabah,
   listMyTabungan,
-  type ApiResult,
-  type Estimasi,
-  type MutasiResult,
-  type Tabungan,
-  type Transaksi,
 } from "@/lib/api";
-import { toRupiah, formatTanggal, progressPct } from "@/lib/format";
+import type { Estimasi, TabunganHaji } from "@/lib/types";
+import { toRupiah, progressPct } from "@/lib/format";
 import { SetorModal } from "@/components/setor-modal";
 
-const LIMIT = 10;
-
 export function EstimasiView() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [tabungan, setTabungan] = useState<Tabungan | null>(null);
+  const [tabungan, setTabungan] = useState<TabunganHaji | null>(null);
   const [estimasi, setEstimasi] = useState<Estimasi | null>(null);
-  const [mutasi, setMutasi] = useState<MutasiResult | null>(null);
-  const [offset, setOffset] = useState(0);
   const [showSetor, setShowSetor] = useState(false);
-  const [nama, setNama] = useState("Nasabah");
-
-  const handle401 = useCallback(
-    (r: ApiResult<unknown>): boolean => {
-      if (!r.ok && r.status === 401) {
-        router.replace("/login");
-        return true;
-      }
-      return false;
-    },
-    [router]
-  );
-
-  const loadMutasi = useCallback(
-    async (id: string, nextOffset: number) => {
-      const res = await getMutasi(id, LIMIT, nextOffset);
-      if (handle401(res)) return;
-      if (res.ok) {
-        setMutasi(res.data);
-        setOffset(nextOffset);
-      }
-    },
-    [handle401]
-  );
 
   const load = useCallback(async () => {
-    const tabRes = await listMyTabungan();
-    if (handle401(tabRes)) return;
-    setNama(getStoredNasabah()?.nama?.split(" ")[0] ?? "Nasabah");
-    setError(null);
-    if (!tabRes.ok) {
-      setError(tabRes.error);
-      setLoading(false);
-      return;
-    }
+    try {
+      const tabRes = await listMyTabungan();
+      const akun =
+        tabRes.data.find((t) => t.status === "AKTIF") ??
+        tabRes.data[0] ??
+        null;
+      setTabungan(akun);
 
-    const akun =
-      tabRes.data.data.find((t) => t.status === "AKTIF") ??
-      tabRes.data.data[0] ??
-      null;
-    setTabungan(akun);
-
-    if (akun) {
-      const [estRes, mutRes] = await Promise.all([
-        getEstimasi(akun.id),
-        getMutasi(akun.id, LIMIT, 0),
-      ]);
-      if (handle401(estRes) || handle401(mutRes)) return;
-      setEstimasi(estRes.ok ? estRes.data : null);
-      if (mutRes.ok) {
-        setMutasi(mutRes.data);
-        setOffset(0);
+      if (akun) {
+        try {
+          setEstimasi(await getEstimasi(akun.id));
+        } catch (e) {
+          if (e instanceof ApiError && e.status === 401) throw e;
+          setEstimasi(null);
+        }
       }
+      setError(null);
+    } catch (err) {
+      // 401 → api client sudah auto-logout & redirect ke /login.
+      if (err instanceof ApiError && err.status === 401) return;
+      setError(errorMessage(err));
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [handle401]);
+  }, []);
 
   useEffect(() => {
-    // Muat estimasi + mutasi saat mount (auth berbasis token = fetch sisi klien).
+    // Muat estimasi saat mount (auth berbasis token = fetch sisi klien).
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, [load]);
@@ -109,7 +70,7 @@ export function EstimasiView() {
             Belum ada rekening Tabungan Haji
           </h2>
           <p className="mt-2 text-body-md text-on-surface-variant">
-            Buka rekening terlebih dahulu untuk melihat estimasi & mutasi.
+            Buka rekening terlebih dahulu untuk melihat estimasi keberangkatan.
           </p>
           <Link
             href="/dashboard"
@@ -124,135 +85,201 @@ export function EstimasiView() {
 
   const e = estimasi?.estimasi;
   const p = estimasi?.parameter;
+  const sudahPorsi = e?.sudahPorsi ?? false;
   const progress = p ? progressPct(tabungan.saldo, p.setoranAwalBpih) : 0;
+  const tahunIni = new Date().getFullYear();
 
   return (
-    <main className="mx-auto w-full max-w-[1280px] flex-grow space-y-12 px-5 py-12 md:space-y-16 md:px-16">
-      <section className="space-y-2">
-        <h1 className="text-headline-lg text-on-surface">
-          Assalamu&apos;alaikum, {nama}
+    <main className="mx-auto w-full max-w-[1280px] flex-grow px-5 py-12 md:px-16">
+      {/* Header halaman */}
+      <header className="mb-12">
+        <h1 className="mb-2 text-display-lg-mobile text-primary md:text-display-lg">
+          Estimasi Keberangkatan
         </h1>
         <p className="text-body-lg text-on-surface-variant">
-          Berikut rincian estimasi keberangkatan dan riwayat tabungan haji Anda.
+          Pantau perjalanan spiritual Anda menuju Baitullah.
         </p>
-      </section>
+      </header>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-lg bg-error-container px-4 py-3 text-on-error-container">
+        <div className="mb-8 flex items-center gap-2 rounded-lg bg-error-container px-4 py-3 text-on-error-container">
           <span className="material-symbols-outlined text-[20px]">error</span>
           <span className="text-label-md">{error}</span>
         </div>
       )}
 
-      {/* Bento: ringkasan saldo + estimasi */}
-      <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {/* Kartu saldo */}
-        <div className="relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-2xl bg-primary p-6 text-on-primary shadow-sm md:col-span-1">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-10"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-              backgroundSize: "24px 24px",
-            }}
-          />
-          <div className="z-10">
-            <p className="mb-1 text-label-md text-primary-fixed-dim">
-              Total Saldo Tabungan
-            </p>
-            <h2 className="mb-6 text-headline-lg">{toRupiah(tabungan.saldo)}</h2>
-            <div className="space-y-1">
-              <p className="text-label-sm text-primary-fixed-dim">
-                Nomor Rekening
-              </p>
-              <p className="font-mono text-body-md font-medium tracking-wider">
-                {tabungan.nomorRekening}
-              </p>
-            </div>
-          </div>
-          <div className="z-10 mt-6">
-            <button
-              type="button"
-              onClick={() => setShowSetor(true)}
-              className="w-full rounded-lg bg-surface-container-lowest px-4 py-2 text-center text-label-md font-semibold text-primary transition-colors hover:bg-surface"
-            >
-              Top Up
-            </button>
-          </div>
-        </div>
-
-        {/* Kartu estimasi detail */}
-        <div className="flex flex-col justify-between rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)] md:col-span-2">
-          <div className="mb-8 flex items-start justify-between">
-            <div>
-              <h3 className="mb-2 text-headline-md text-on-surface">
-                Estimasi Keberangkatan
-              </h3>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-secondary-fixed/30 px-3 py-1 text-label-sm text-on-secondary-container">
-                <span className="material-symbols-outlined text-[16px]">
-                  pending_actions
-                </span>
-                Status Porsi: {e?.sudahPorsi ? "SUDAH PORSI" : "BELUM PORSI"}
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="mb-1 text-label-md text-on-surface-variant">
-                Tahun Estimasi
-              </p>
-              <p className="text-display-lg text-primary">
-                {e?.tahunEstimasiBerangkat ?? "-"}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex justify-between text-label-md text-on-surface">
-              <span>Terkumpul: {toRupiah(tabungan.saldo)}</span>
-              <span>
-                Target Setoran Awal:{" "}
-                {p ? toRupiah(p.setoranAwalBpih) : "-"}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* Kolom kiri */}
+        <div className="flex flex-col gap-6 lg:col-span-8">
+          {/* Target Porsi Haji */}
+          <section className="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+            <div className="pointer-events-none absolute right-0 top-0 opacity-5">
+              <span className="material-symbols-outlined fill-icon text-[200px]">
+                mosque
               </span>
             </div>
-            <div className="h-3 w-full overflow-hidden rounded-full bg-surface-variant">
-              <div
-                className="h-full rounded-full bg-secondary-container"
-                style={{ width: `${progress}%` }}
+            <div className="relative z-10 mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+              <div>
+                <h2 className="mb-1 text-headline-md text-on-surface">
+                  Target Porsi Haji
+                </h2>
+                <p className="text-body-md text-on-surface-variant">
+                  Kumpulkan saldo untuk mendapatkan nomor porsi.
+                </p>
+              </div>
+              <div className="text-left md:text-right">
+                <p className="mb-1 text-label-md uppercase tracking-wider text-on-surface-variant">
+                  Target
+                </p>
+                <p className="text-headline-lg text-primary">
+                  {p ? toRupiah(p.setoranAwalBpih) : "-"}
+                </p>
+              </div>
+            </div>
+
+            <div className="relative z-10">
+              <div className="mb-2 flex justify-between">
+                <span className="text-label-md font-bold text-primary">
+                  {progress}% Terkumpul
+                </span>
+                <span className="text-label-md text-on-surface-variant">
+                  {sudahPorsi
+                    ? "Porsi tercapai"
+                    : `Sisa: ${e ? toRupiah(e.kekuranganUntukPorsi) : "-"}`}
+                </span>
+              </div>
+              <div className="relative h-4 w-full overflow-hidden rounded-full bg-secondary-fixed">
+                <div
+                  className="absolute left-0 top-0 h-full rounded-full bg-secondary-fixed-dim transition-all duration-1000 ease-in-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="mt-2 text-right">
+                <span className="text-body-md font-semibold text-on-surface">
+                  Terkumpul {toRupiah(tabungan.saldo)}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* Peta Perjalanan Haji */}
+          <section className="rounded-2xl bg-surface-container-lowest p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+            <h3 className="mb-8 text-headline-md text-on-surface">
+              Peta Perjalanan Haji Anda
+            </h3>
+            <div className="relative flex flex-col justify-between md:flex-row">
+              {/* Garis penghubung */}
+              <div className="absolute left-[23px] bottom-8 top-8 z-0 w-[2px] bg-surface-variant md:left-8 md:right-8 md:bottom-auto md:top-[23px] md:h-[2px] md:w-auto" />
+
+              <TimelineStep
+                icon="account_balance_wallet"
+                ring="bg-primary"
+                iconClass="text-on-primary"
+                labelClass="text-primary"
+                label="Saat Ini"
+                year={String(tahunIni)}
+                caption="Menabung"
+              />
+              <TimelineStep
+                icon="description"
+                ring="bg-secondary-fixed-dim border-4 border-surface-container-lowest"
+                iconClass="text-on-surface"
+                labelClass="text-secondary"
+                label="Estimasi"
+                year={e ? String(e.tahunDapatPorsi) : "-"}
+                caption="Dapat Porsi"
+              />
+              <TimelineStep
+                icon="flight_takeoff"
+                ring="bg-surface-variant border-4 border-surface-container-lowest"
+                iconClass="text-on-surface-variant"
+                labelClass="text-on-surface-variant"
+                label="Estimasi"
+                year={e ? String(e.tahunEstimasiBerangkat) : "-"}
+                caption="Berangkat"
               />
             </div>
-            <div className="mt-6 grid grid-cols-2 gap-4 border-t border-outline-variant/30 pt-6">
-              <div>
-                <p className="mb-1 text-label-sm text-on-surface-variant">
-                  Sisa Waktu Tunggu
-                </p>
-                <p className="text-headline-md text-on-surface">
-                  {e?.waitingYears ?? "-"} Tahun
-                </p>
+          </section>
+        </div>
+
+        {/* Kolom kanan */}
+        <div className="flex flex-col gap-6 lg:col-span-4">
+          {/* Analisis Tabungan */}
+          <section className="rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+            <div className="mb-6 flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">
+                insights
+              </span>
+              <h3 className="text-headline-md text-on-surface">
+                Analisis Tabungan
+              </h3>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-surface-variant pb-4">
+                <span className="text-body-md text-on-surface-variant">
+                  Rata-rata Setoran/Bln
+                </span>
+                <span className="text-headline-sm text-on-surface">
+                  {p ? toRupiah(p.avgSetorBulananDigunakan) : "-"}
+                </span>
               </div>
-              <div>
-                <p className="mb-1 text-label-sm text-on-surface-variant">
-                  Sisa Pelunasan (Estimasi)
-                </p>
-                <p className="text-headline-md text-on-surface">
-                  {e ? toRupiah(e.sisaPelunasan) : "-"}
-                </p>
+              <div className="flex items-center justify-between">
+                <span className="text-body-md text-on-surface-variant">
+                  Waktu Capai Porsi
+                </span>
+                <span className="text-headline-sm text-primary">
+                  {sudahPorsi
+                    ? "Tercapai"
+                    : e
+                      ? `~${e.bulanUntukPorsi} Bulan lagi`
+                      : "-"}
+                </span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* Riwayat mutasi */}
-      <section className="space-y-6">
-        <h3 className="text-headline-md text-on-surface">Riwayat Mutasi</h3>
-        <MutasiTable
-          mutasi={mutasi}
-          offset={offset}
-          onPrev={() =>
-            tabungan && loadMutasi(tabungan.id, Math.max(0, offset - LIMIT))
-          }
-          onNext={() => tabungan && loadMutasi(tabungan.id, offset + LIMIT)}
-        />
-      </section>
+          {/* Estimasi Pelunasan BPIH */}
+          <section className="rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+            <div className="mb-6 flex items-center gap-3">
+              <span className="material-symbols-outlined text-secondary">
+                account_balance
+              </span>
+              <h3 className="text-headline-md text-on-surface">
+                Estimasi Pelunasan BPIH
+              </h3>
+            </div>
+            <div className="mb-6 rounded-lg bg-surface-container-low p-4">
+              <p className="mb-1 text-label-sm uppercase text-on-surface-variant">
+                Total Estimasi BPIH
+              </p>
+              <p className="text-headline-md text-on-surface">
+                {p ? toRupiah(p.bpihTotal) : "-"}
+              </p>
+              <p className="mt-2 text-label-sm italic text-on-surface-variant">
+                *Berdasarkan standar BPIH terkini
+              </p>
+            </div>
+            <div className="flex items-end justify-between">
+              <span className="text-body-md text-on-surface">
+                Sisa Pelunasan:
+              </span>
+              <span className="text-headline-md font-bold text-error">
+                {e ? toRupiah(e.sisaPelunasan) : "-"}
+              </span>
+            </div>
+          </section>
+
+          {/* CTA */}
+          <button
+            type="button"
+            onClick={() => setShowSetor(true)}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-container px-6 py-4 text-label-md font-bold text-on-primary shadow-sm transition-colors hover:bg-primary"
+          >
+            <span className="material-symbols-outlined">trending_up</span>
+            Top Up Tabungan
+          </button>
+        </div>
+      </div>
 
       {showSetor && (
         <SetorModal
@@ -268,111 +295,39 @@ export function EstimasiView() {
   );
 }
 
-function MutasiTable({
-  mutasi,
-  offset,
-  onPrev,
-  onNext,
+function TimelineStep({
+  icon,
+  ring,
+  iconClass,
+  labelClass,
+  label,
+  year,
+  caption,
 }: {
-  mutasi: MutasiResult | null;
-  offset: number;
-  onPrev: () => void;
-  onNext: () => void;
+  icon: string;
+  ring: string;
+  iconClass: string;
+  labelClass: string;
+  label: string;
+  year: string;
+  caption: string;
 }) {
-  const rows = mutasi?.data ?? [];
-  const total = mutasi?.total ?? 0;
-  const from = total === 0 ? 0 : offset + 1;
-  const to = Math.min(offset + rows.length, total);
-
   return (
-    <div className="overflow-hidden rounded-2xl border border-outline-variant/30 bg-surface-container-lowest shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-outline-variant bg-surface text-label-md text-on-surface-variant">
-              <th className="px-6 py-4 font-semibold">Tanggal</th>
-              <th className="px-6 py-4 font-semibold">Tipe</th>
-              <th className="px-6 py-4 font-semibold">Metode</th>
-              <th className="px-6 py-4 text-right font-semibold">Nominal</th>
-              <th className="px-6 py-4 text-right font-semibold">Saldo</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-outline-variant/50 text-body-md text-on-surface">
-            {rows.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="px-6 py-10 text-center text-on-surface-variant"
-                >
-                  Belum ada transaksi.
-                </td>
-              </tr>
-            ) : (
-              rows.map((t) => <MutasiRow key={t.id} t={t} />)
-            )}
-          </tbody>
-        </table>
+    <div className="relative z-10 mb-8 flex flex-1 items-center gap-4 bg-surface-container-lowest py-2 last:mb-0 md:mb-0 md:flex-col md:gap-3 md:px-4">
+      <div
+        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-sm ${ring}`}
+      >
+        <span className={`material-symbols-outlined ${iconClass}`}>{icon}</span>
       </div>
-
-      <div className="flex items-center justify-between border-t border-outline-variant bg-surface px-6 py-4">
-        <span className="text-label-sm text-on-surface-variant">
-          Menampilkan {from}-{to} dari {total} transaksi
-        </span>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={onPrev}
-            disabled={offset === 0}
-            className="rounded-lg border border-outline-variant p-2 text-on-surface-variant hover:bg-surface-container disabled:opacity-50"
-          >
-            <span className="material-symbols-outlined text-[20px]">
-              chevron_left
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            disabled={to >= total}
-            className="rounded-lg border border-outline-variant p-2 text-on-surface-variant hover:bg-surface-container disabled:opacity-50"
-          >
-            <span className="material-symbols-outlined text-[20px]">
-              chevron_right
-            </span>
-          </button>
-        </div>
+      <div className="text-left md:text-center">
+        <p
+          className={`mb-1 text-label-sm uppercase tracking-wider ${labelClass}`}
+        >
+          {label}
+        </p>
+        <p className="text-headline-md text-on-surface">{year}</p>
+        <p className="text-body-md text-on-surface-variant">{caption}</p>
       </div>
     </div>
-  );
-}
-
-function MutasiRow({ t }: { t: Transaksi }) {
-  const isSetor = t.jenis === "SETOR";
-  return (
-    <tr className="transition-colors hover:bg-surface">
-      <td className="px-6 py-4 text-on-surface-variant">
-        {formatTanggal(t.waktu)}
-      </td>
-      <td className="px-6 py-4">
-        <span
-          className={`inline-flex items-center rounded px-2 py-0.5 text-label-sm ${
-            isSetor ? "bg-primary/10 text-primary" : "bg-error/10 text-error"
-          }`}
-        >
-          {t.jenis}
-        </span>
-      </td>
-      <td className="px-6 py-4 text-on-surface-variant">{t.metode ?? "-"}</td>
-      <td
-        className={`px-6 py-4 text-right font-medium ${
-          isSetor ? "text-primary" : "text-error"
-        }`}
-      >
-        {isSetor ? "+" : "-"}
-        {toRupiah(t.nominal)}
-      </td>
-      <td className="px-6 py-4 text-right text-on-surface-variant">
-        {toRupiah(t.saldoSesudah)}
-      </td>
-    </tr>
   );
 }

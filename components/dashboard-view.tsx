@@ -2,74 +2,58 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
+  ApiError,
+  errorMessage,
   getEstimasi,
   listMyTabungan,
   me,
   openAccount,
-  type ApiResult,
-  type Estimasi,
-  type Profil,
-  type Tabungan,
 } from "@/lib/api";
+import type { Estimasi, Nasabah, TabunganHaji } from "@/lib/types";
 import { toRupiah, progressPct } from "@/lib/format";
 import { SetorModal } from "@/components/setor-modal";
+import { HealthStatus } from "@/components/health-status";
 
 export function DashboardView() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [profil, setProfil] = useState<Profil | null>(null);
-  const [tabungan, setTabungan] = useState<Tabungan | null>(null);
+  const [profil, setProfil] = useState<Nasabah | null>(null);
+  const [tabungan, setTabungan] = useState<TabunganHaji | null>(null);
   const [estimasi, setEstimasi] = useState<Estimasi | null>(null);
   const [showSetor, setShowSetor] = useState(false);
   const [opening, setOpening] = useState(false);
 
-  const handle401 = useCallback(
-    (r: ApiResult<unknown>): boolean => {
-      if (!r.ok && r.status === 401) {
-        router.replace("/login");
-        return true;
-      }
-      return false;
-    },
-    [router]
-  );
-
   const load = useCallback(async () => {
-    const [profilRes, tabRes] = await Promise.all([me(), listMyTabungan()]);
-    if (handle401(profilRes) || handle401(tabRes)) return;
-    setError(null);
+    try {
+      const [profilData, tabRes] = await Promise.all([me(), listMyTabungan()]);
+      setProfil(profilData);
 
-    if (!profilRes.ok) {
-      setError(profilRes.error);
+      const akun =
+        tabRes.data.find((t) => t.status === "AKTIF") ??
+        tabRes.data[0] ??
+        null;
+      setTabungan(akun);
+
+      // Estimasi opsional: bila gagal (mis. belum tersedia), tampilkan tanpa data.
+      if (akun) {
+        try {
+          setEstimasi(await getEstimasi(akun.id));
+        } catch {
+          setEstimasi(null);
+        }
+      } else {
+        setEstimasi(null);
+      }
+      setError(null);
+    } catch (err) {
+      // 401 → api client sudah auto-logout & redirect ke /login.
+      if (err instanceof ApiError && err.status === 401) return;
+      setError(errorMessage(err));
+    } finally {
       setLoading(false);
-      return;
     }
-    setProfil(profilRes.data);
-
-    if (!tabRes.ok) {
-      setError(tabRes.error);
-      setLoading(false);
-      return;
-    }
-
-    const akun =
-      tabRes.data.data.find((t) => t.status === "AKTIF") ??
-      tabRes.data.data[0] ??
-      null;
-    setTabungan(akun);
-
-    if (akun) {
-      const estRes = await getEstimasi(akun.id);
-      if (handle401(estRes)) return;
-      setEstimasi(estRes.ok ? estRes.data : null);
-    } else {
-      setEstimasi(null);
-    }
-    setLoading(false);
-  }, [handle401]);
+  }, []);
 
   useEffect(() => {
     // Muat data dashboard saat mount (auth berbasis token = fetch sisi klien).
@@ -80,14 +64,16 @@ export function DashboardView() {
   async function handleOpenAccount() {
     if (!profil) return;
     setOpening(true);
-    const res = await openAccount(profil.id);
-    setOpening(false);
-    if (handle401(res)) return;
-    if (!res.ok) {
-      setError(res.error);
-      return;
+    try {
+      await openAccount(profil.id);
+      await load();
+    } catch (err) {
+      if (!(err instanceof ApiError && err.status === 401)) {
+        setError(errorMessage(err));
+      }
+    } finally {
+      setOpening(false);
     }
-    load();
   }
 
   if (loading) {
@@ -104,13 +90,16 @@ export function DashboardView() {
 
   return (
     <main className="mx-auto w-full max-w-[1280px] flex-grow px-5 py-8 md:px-16 md:py-12">
-      <header className="mb-10">
-        <h1 className="mb-2 text-display-lg-mobile text-on-surface md:text-display-lg">
-          Assalamu&apos;alaikum, {namaDepan}
-        </h1>
-        <p className="text-body-lg text-on-surface-variant">
-          Pantau perkembangan tabungan dan estimasi porsi Haji Anda di sini.
-        </p>
+      <header className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div>
+          <h1 className="mb-2 text-display-lg-mobile text-on-surface md:text-display-lg">
+            Assalamu&apos;alaikum, {namaDepan}
+          </h1>
+          <p className="text-body-lg text-on-surface-variant">
+            Pantau perkembangan tabungan dan estimasi porsi Haji Anda di sini.
+          </p>
+        </div>
+        <HealthStatus />
       </header>
 
       {error && (
@@ -160,7 +149,7 @@ export function DashboardView() {
                 <span className="text-label-sm">Setor</span>
               </button>
               <Link
-                href="/estimasi"
+                href="/mutasi"
                 className="flex h-[100px] flex-col items-center justify-center gap-2 rounded-lg border border-outline-variant/50 bg-surface-container-lowest p-4 text-on-surface shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-colors hover:bg-surface-container-low"
               >
                 <span className="material-symbols-outlined text-primary">

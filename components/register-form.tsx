@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { register } from "@/lib/api";
+import { errorMessage, getFieldErrors, register } from "@/lib/api";
 
 const FIELD =
   "w-full rounded-lg border-transparent bg-[#F1F3F5] py-3 pl-10 pr-4 text-body-md text-on-surface placeholder:text-outline-variant transition-colors focus:border-primary-container focus:ring-1 focus:ring-primary-container";
@@ -37,11 +37,14 @@ export function RegisterForm() {
   const [terms, setTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Pesan validasi per-field (dari ApiError.details backend).
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    setFieldErrors({});
 
     const v = { nik, nama, email, nomorHp, password, terms };
     const localError = validate(v);
@@ -51,13 +54,20 @@ export function RegisterForm() {
     }
 
     setSubmitting(true);
-    const result = await register({ nik, nama, email, nomorHp, password });
-    if (!result.ok) {
-      setError(result.error);
+    try {
+      await register({ nik, nama, email, nomorHp, password });
+      router.push("/login?registered=1");
+    } catch (err) {
+      const fields = getFieldErrors(err);
+      if (Object.keys(fields).length > 0) {
+        // Tampilkan pesan di bawah masing-masing input terkait.
+        setFieldErrors(fields);
+      } else {
+        // Error non-validasi (mis. 409 NIK/email terdaftar) → pesan generik.
+        setError(errorMessage(err, "Pendaftaran gagal, periksa kembali data Anda."));
+      }
       setSubmitting(false);
-      return;
     }
-    router.push("/login?registered=1");
   }
 
   return (
@@ -72,7 +82,12 @@ export function RegisterForm() {
         </div>
       )}
 
-      <Field label="NIK (Nomor Induk Kependudukan)" htmlFor="nik" icon="badge">
+      <Field
+        label="NIK (Nomor Induk Kependudukan)"
+        htmlFor="nik"
+        icon="badge"
+        error={fieldErrors.nik}
+      >
         <input
           id="nik"
           inputMode="numeric"
@@ -84,7 +99,12 @@ export function RegisterForm() {
         />
       </Field>
 
-      <Field label="Nama Lengkap (Sesuai KTP)" htmlFor="nama" icon="person">
+      <Field
+        label="Nama Lengkap (Sesuai KTP)"
+        htmlFor="nama"
+        icon="person"
+        error={fieldErrors.nama}
+      >
         <input
           id="nama"
           value={nama}
@@ -94,7 +114,7 @@ export function RegisterForm() {
         />
       </Field>
 
-      <Field label="Email" htmlFor="email" icon="mail">
+      <Field label="Email" htmlFor="email" icon="mail" error={fieldErrors.email}>
         <input
           id="email"
           type="email"
@@ -105,7 +125,12 @@ export function RegisterForm() {
         />
       </Field>
 
-      <Field label="Nomor HP" htmlFor="phone" icon="phone_iphone">
+      <Field
+        label="Nomor HP"
+        htmlFor="phone"
+        icon="phone_iphone"
+        error={fieldErrors.nomorHp}
+      >
         <input
           id="phone"
           type="tel"
@@ -117,7 +142,12 @@ export function RegisterForm() {
         />
       </Field>
 
-      <Field label="Password" htmlFor="password" icon="lock">
+      <Field
+        label="Password"
+        htmlFor="password"
+        icon="lock"
+        error={fieldErrors.password}
+      >
         <input
           id="password"
           type={showPassword ? "text" : "password"}
@@ -178,11 +208,13 @@ function Field({
   label,
   htmlFor,
   icon,
+  error,
   children,
 }: {
   label: string;
   htmlFor: string;
   icon: string;
+  error?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -193,12 +225,24 @@ function Field({
       >
         {label}
       </label>
-      <div className="relative">
+      <div
+        className={
+          error
+            ? "relative rounded-lg ring-1 ring-error"
+            : "relative"
+        }
+      >
         <span className="material-symbols-outlined pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-outline">
           {icon}
         </span>
         {children}
       </div>
+      {error && (
+        <p className="mt-1.5 flex items-center gap-1 text-label-sm text-error">
+          <span className="material-symbols-outlined text-[16px]">error</span>
+          {error}
+        </p>
+      )}
     </div>
   );
 }

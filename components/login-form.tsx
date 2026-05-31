@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { login, setSession } from "@/lib/api";
+import { errorMessage, login, setSession } from "@/lib/api";
 
 export function LoginForm() {
   const router = useRouter();
@@ -17,17 +17,18 @@ export function LoginForm() {
     setError(null);
     setSubmitting(true);
 
-    const result = await login(email, password);
-
-    if (!result.ok) {
-      setError(result.error);
+    try {
+      const data = await login(email, password);
+      // Simpan token & profil untuk dipakai request berikutnya
+      setSession(data.token, data.nasabah);
+      // Admin diarahkan ke manajemen nasabah; nasabah ke dashboard.
+      router.push(
+        data.nasabah.role === "ADMIN" ? "/admin/nasabah" : "/dashboard"
+      );
+    } catch (err) {
+      setError(errorMessage(err, "Email atau kata sandi salah."));
       setSubmitting(false);
-      return;
     }
-
-    // Simpan token & profil untuk dipakai request berikutnya
-    setSession(result.data.token, result.data.nasabah);
-    router.push("/dashboard");
   }
 
   return (

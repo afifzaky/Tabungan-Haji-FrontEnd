@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tambah/Edit Nasabah - BSI Haji Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#251a00",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "inverse-primary": "#59dacd",
+                        "tertiary-fixed": "#e4e2e1",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#ffdf99",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-surface-variant": "#3c4947",
+                        "surface-tint": "#006a62",
+                        "secondary": "#775a00",
+                        "surface-dim": "#d9dadb",
+                        "secondary-container": "#fecb44",
+                        "primary-container": "#00a99d",
+                        "primary": "#006a62",
+                        "outline-variant": "#bbc9c6",
+                        "on-secondary-fixed-variant": "#5a4300",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "inverse-surface": "#2e3132",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "background": "#f8f9fa",
+                        "tertiary-container": "#989696",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#003631",
+                        "secondary-fixed-dim": "#f2c03a",
+                        "on-secondary-container": "#715600",
+                        "tertiary": "#5f5e5e",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#2f2f2f",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "outline": "#6c7a77",
+                        "on-background": "#191c1d",
+                        "surface": "#f8f9fa",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed-dim": "#59dacd",
+                        "on-primary-fixed-variant": "#00504a",
+                        "primary-fixed": "#78f7e9",
+                        "on-primary-fixed": "#00201d",
+                        "surface-container-high": "#e7e8e9",
+                        "tertiary-fixed-dim": "#c8c6c6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-desktop": "64px",
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans", "sans-serif"],
+                        "headline-sm": ["Plus Jakarta Sans", "sans-serif"],
+                        "headline-md": ["Plus Jakarta Sans", "sans-serif"],
+                        "label-md": ["Plus Jakarta Sans", "sans-serif"],
+                        "body-md": ["Plus Jakarta Sans", "sans-serif"],
+                        "label-sm": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "42px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "900" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background min-h-screen flex text-on-background">
+<!-- SideNavBar -->
+<nav class="bg-surface-container h-screen w-64 fixed left-0 top-0 flex flex-col py-4 z-50 hidden md:flex border-r border-outline-variant/20">
+<!-- Header -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mosque</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-black text-primary">Haji Portal</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Enterprise Admin</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-2 flex-1">
+<!-- Active Tab: Manage Customers -->
+<a class="bg-primary-container text-on-primary-container rounded-lg mx-2 flex items-center gap-3 px-4 py-3 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-md text-label-md">Manage Customers</span>
+</a>
+<!-- Inactive Tabs -->
+<a class="text-on-surface-variant hover:bg-surface-container-highest rounded-lg mx-2 flex items-center gap-3 px-4 py-3 duration-200 transition-all" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-highest rounded-lg mx-2 flex items-center gap-3 px-4 py-3 duration-200 transition-all" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+<span class="font-label-md text-label-md">System Health</span>
+</a>
+</div>
+<!-- Footer / CTA -->
+<div class="mt-auto flex flex-col gap-2 border-t border-outline-variant/20 pt-4 px-2">
+<button class="w-full bg-surface-container-lowest border border-outline-variant text-primary font-label-md text-label-md rounded-lg py-2.5 flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors mb-2">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                Export Data
+            </button>
+<a class="text-on-surface-variant hover:bg-surface-container-highest rounded-lg flex items-center gap-3 px-4 py-3 duration-200 transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="text-error hover:bg-error-container/20 rounded-lg flex items-center gap-3 px-4 py-3 duration-200 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 w-full">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest w-full h-16 shadow-sm flex justify-between items-center px-6 sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface hover:bg-surface-container rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary">BSI Haji Admin</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-primary hover:bg-surface-container transition-colors p-2 rounded-full cursor-pointer active:opacity-80 flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-primary hover:bg-surface-container transition-colors p-2 rounded-full cursor-pointer active:opacity-80 flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md font-bold ml-2 cursor-pointer border border-primary/20">
+                    AD
+                </div>
+</div>
+</header>
+<!-- Main Form Canvas -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop w-full max-w-container-max mx-auto">
+<!-- Page Header -->
+<div class="mb-8 flex items-center justify-between">
+<div>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors mb-2 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Kembali ke Daftar
+                    </button>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Tambah/Edit Nasabah</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Lengkapi informasi detail nasabah untuk pendaftaran atau pembaruan data sistem.</p>
+</div>
+</div>
+<!-- Form Card -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 overflow-hidden">
+<div class="p-6 md:p-8">
+<form class="flex flex-col gap-8">
+<!-- Personal Info Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Nama Lengkap -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="namaLengkap">Nama Lengkap</label>
+<input class="bg-surface-container-low border-0 rounded-lg h-12 px-4 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-2 focus:border-primary focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50" id="namaLengkap" placeholder="Masukkan nama lengkap sesuai KTP" type="text"/>
+</div>
+<!-- NIK -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="nik">Nomor Induk Kependudukan (NIK)</label>
+<input class="bg-surface-container-low border-0 rounded-lg h-12 px-4 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-2 focus:border-primary focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50" id="nik" maxlength="16" placeholder="16 digit NIK" type="text"/>
+</div>
+<!-- Email -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="email">Email Aktif</label>
+<input class="bg-surface-container-low border-0 rounded-lg h-12 px-4 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-2 focus:border-primary focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50" id="email" placeholder="contoh@email.com" type="email"/>
+</div>
+<!-- Nomor HP -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="noHp">Nomor Handphone</label>
+<div class="flex">
+<div class="bg-surface-container-highest border-0 rounded-l-lg h-12 px-4 flex items-center justify-center font-body-md text-body-md text-on-surface-variant">
+                                        +62
+                                    </div>
+<input class="bg-surface-container-low border-0 rounded-r-lg h-12 px-4 flex-1 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-2 focus:border-primary focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50" id="noHp" placeholder="81234567890" type="tel"/>
+</div>
+</div>
+</div>
+<hr class="border-outline-variant/20"/>
+<!-- Security & Role Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Password -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface" for="password">Password Akses</label>
+<div class="relative">
+<input class="bg-surface-container-low border-0 rounded-lg h-12 px-4 w-full font-body-md text-body-md text-on-surface focus:ring-0 focus:border-2 focus:border-primary focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50" id="password" placeholder="Buat password sementara" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center h-8 w-8 rounded-full" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70 mt-1">Minimal 8 karakter, kombinasi angka &amp; huruf.</p>
+</div>
+<!-- Role Selection -->
+<div class="flex flex-col gap-3">
+<label class="font-label-md text-label-md text-on-surface">Peran Akses (Role)</label>
+<div class="flex gap-4">
+<label class="flex-1 cursor-pointer">
+<input checked="" class="peer sr-only" name="role" type="radio" value="nasabah"/>
+<div class="border-2 border-outline-variant rounded-lg p-4 flex items-center gap-3 peer-checked:border-primary peer-checked:bg-primary-container/10 transition-all hover:bg-surface-container-low">
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Nasabah</span>
+</div>
+</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="role" type="radio" value="admin"/>
+<div class="border-2 border-outline-variant rounded-lg p-4 flex items-center gap-3 peer-checked:border-primary peer-checked:bg-primary-container/10 transition-all hover:bg-surface-container-low">
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Admin BSI</span>
+</div>
+</div>
+</label>
+</div>
+</div>
+</div>
+</form>
+</div>
+<!-- Action Footer -->
+<div class="bg-surface-container-low p-6 flex items-center justify-end gap-4 border-t border-outline-variant/10">
+<button class="border-2 border-outline-variant text-on-surface font-label-md text-label-md px-6 py-2.5 rounded-lg hover:bg-surface-container-highest transition-colors" type="button">
+                        Batal
+                    </button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-8 py-3 rounded-lg hover:opacity-90 hover:shadow-md transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                        Simpan Perubahan
+                    </button>
+</div>
+</div>
+</main>
+</div>
+<!-- Script for interactive elements (Eye icon toggle) -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const togglePasswordBtn = document.querySelector('button .material-symbols-outlined:contains("visibility")').closest('button');
+            const passwordInput = document.getElementById('password');
+
+            if (togglePasswordBtn && passwordInput) {
+                togglePasswordBtn.addEventListener('click', () => {
+                    const icon = togglePasswordBtn.querySelector('.material-symbols-outlined');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.textContent = 'visibility_off';
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.textContent = 'visibility';
+                    }
+                });
+            }
+        });
+        
+        // Polyfill for :contains selector in script above
+        jQuery.expr[':'].contains = function(a, i, m) {
+          return jQuery(a).text().toUpperCase()
+              .indexOf(m[3].toUpperCase()) >= 0;
+        };
+    </script>
+</body></html>

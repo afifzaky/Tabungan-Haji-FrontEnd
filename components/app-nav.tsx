@@ -7,7 +7,7 @@ import { getStoredNasabah, logout } from "@/lib/api";
 
 const LINKS = [
   { label: "Dashboard", href: "/dashboard" },
-  { label: "Mutasi", href: "/estimasi" },
+  { label: "Mutasi", href: "/mutasi" },
   { label: "Estimasi", href: "/estimasi" },
 ];
 
@@ -30,10 +30,8 @@ export function AppNav() {
     router.replace("/login");
   }
 
-  function isActive(href: string, label: string) {
-    if (label === "Dashboard") return pathname === "/dashboard";
-    if (label === "Estimasi") return pathname === "/estimasi";
-    return false;
+  function isActive(href: string) {
+    return pathname === href;
   }
 
   return (
@@ -50,7 +48,7 @@ export function AppNav() {
 
         <div className="hidden gap-8 md:flex">
           {LINKS.map((l) => {
-            const active = isActive(l.href, l.label);
+            const active = isActive(l.href);
             return (
               <Link
                 key={l.label}

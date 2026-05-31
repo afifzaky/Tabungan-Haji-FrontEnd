@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RegisterForm } from "@/components/register-form";
+import { GuestGuard } from "@/components/guest-guard";
 
 export const metadata: Metadata = {
   title: "Daftar — BSI Tabungan Haji",
@@ -11,6 +12,7 @@ const SIDE_IMAGE =
 
 export default function RegisterPage() {
   return (
+    <GuestGuard>
     <main className="flex min-h-screen w-full text-on-surface">
       {/* Panel gambar (desktop) */}
       <div
@@ -69,5 +71,6 @@ export default function RegisterPage() {
         </div>
       </div>
     </main>
+    </GuestGuard>
   );
 }

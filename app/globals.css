@@ -23,8 +23,11 @@
   --color-secondary-fixed: #ffdf99;
   --color-secondary-fixed-dim: #f2c03a;
   --color-on-secondary: #ffffff;
+  --color-on-secondary-fixed: #251a00;
 
   --color-tertiary: #5f5e5e;
+  --color-tertiary-container: #989696;
+  --color-on-tertiary-container: #2f2f2f;
 
   --color-background: #f8f9fa;
   --color-on-background: #191c1d;
@@ -68,6 +71,10 @@
   --text-headline-md: 24px;
   --text-headline-md--line-height: 32px;
   --text-headline-md--font-weight: 600;
+
+  --text-headline-sm: 20px;
+  --text-headline-sm--line-height: 28px;
+  --text-headline-sm--font-weight: 600;
 
   --text-body-lg: 18px;
   --text-body-lg--line-height: 28px;

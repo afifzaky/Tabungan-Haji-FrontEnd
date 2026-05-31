@@ -3,348 +3,282 @@
 <html lang="id"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Estimasi &amp; Mutasi - BSI Tabungan Haji</title>
-<!-- Google Fonts: Plus Jakarta Sans -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS -->
+<title>Estimasi Keberangkatan | BSI Tabungan Haji</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Tailwind Theme Configuration -->
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "primary-fixed": "#78f7e9",
-                      "inverse-surface": "#2e3132",
-                      "surface-container-lowest": "#ffffff",
-                      "on-error": "#ffffff",
-                      "outline": "#6c7a77",
-                      "inverse-on-surface": "#f0f1f2",
-                      "surface-container": "#edeeef",
-                      "outline-variant": "#bbc9c6",
-                      "on-primary-fixed": "#00201d",
-                      "background": "#f8f9fa",
-                      "error-container": "#ffdad6",
-                      "inverse-primary": "#59dacd",
-                      "on-secondary-fixed-variant": "#5a4300",
-                      "on-tertiary": "#ffffff",
-                      "on-tertiary-fixed": "#1b1c1c",
-                      "on-tertiary-fixed-variant": "#474747",
-                      "surface-tint": "#006a62",
-                      "surface-container-highest": "#e1e3e4",
-                      "primary-fixed-dim": "#59dacd",
-                      "surface": "#f8f9fa",
-                      "secondary-fixed-dim": "#f2c03a",
-                      "tertiary-container": "#989696",
-                      "surface-container-high": "#e7e8e9",
-                      "on-surface-variant": "#3c4947",
-                      "tertiary": "#5f5e5e",
-                      "secondary": "#775a00",
-                      "tertiary-fixed-dim": "#c8c6c6",
-                      "on-surface": "#191c1d",
-                      "primary-container": "#00a99d",
-                      "surface-bright": "#f8f9fa",
-                      "surface-variant": "#e1e3e4",
-                      "on-primary": "#ffffff",
-                      "tertiary-fixed": "#e4e2e1",
-                      "on-primary-container": "#003631",
-                      "on-secondary-container": "#715600",
-                      "surface-dim": "#d9dadb",
-                      "secondary-fixed": "#ffdf99",
-                      "on-secondary-fixed": "#251a00",
-                      "primary": "#006a62",
-                      "secondary-container": "#fecb44",
-                      "on-error-container": "#93000a",
-                      "on-background": "#191c1d",
-                      "on-primary-fixed-variant": "#00504a",
-                      "surface-container-low": "#f3f4f5",
-                      "on-secondary": "#ffffff",
-                      "error": "#ba1a1a",
-                      "on-tertiary-container": "#2f2f2f"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "2xl": "1rem",
-                      "full": "9999px"
-              },
-              "spacing": {
-                      "margin-desktop": "64px",
-                      "gutter": "24px",
-                      "base": "8px",
-                      "container-max": "1280px",
-                      "margin-mobile": "20px",
-                      "16": "64px",
-                      "20": "80px"
-              },
-              "fontFamily": {
-                      "display-lg-mobile": ["Plus Jakarta Sans"],
-                      "display-lg": ["Plus Jakarta Sans"],
-                      "headline-md": ["Plus Jakarta Sans"],
-                      "label-sm": ["Plus Jakarta Sans"],
-                      "body-md": ["Plus Jakarta Sans"],
-                      "label-md": ["Plus Jakarta Sans"],
-                      "headline-lg": ["Plus Jakarta Sans"],
-                      "body-lg": ["Plus Jakarta Sans"]
-              },
-              "fontSize": {
-                      "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                      "display-lg": ["48px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                      "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                      "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
-                      "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                      "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
-                      "headline-lg": ["32px", { "lineHeight": "42px", "fontWeight": "600" }],
-                      "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
-              }
-            }
-          }
-        }
-    </script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .icon-fill {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
         }
     </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#c8c6c6",
+                        "background": "#f8f9fa",
+                        "on-tertiary-container": "#2f2f2f",
+                        "on-secondary-fixed": "#251a00",
+                        "surface-bright": "#f8f9fa",
+                        "outline": "#6c7a77",
+                        "on-secondary-container": "#715600",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-variant": "#e1e3e4",
+                        "surface-tint": "#006a62",
+                        "secondary-container": "#fecb44",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "primary": "#006a62",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#f2c03a",
+                        "primary-fixed-dim": "#59dacd",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary-fixed-variant": "#5a4300",
+                        "inverse-surface": "#2e3132",
+                        "surface-container": "#edeeef",
+                        "secondary": "#775a00",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "primary-fixed": "#78f7e9",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#003631",
+                        "surface": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-container": "#989696",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed": "#ffdf99",
+                        "inverse-primary": "#59dacd",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#5f5e5e",
+                        "on-primary-fixed-variant": "#00504a",
+                        "primary-container": "#00a99d",
+                        "on-surface-variant": "#3c4947",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#bbc9c6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1rem"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "container-max": "1280px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "42px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<body class="bg-background text-on-background min-h-screen flex flex-col">
 <!-- TopNavBar -->
-<header class="bg-surface dark:bg-inverse-surface shadow-sm sticky top-0 z-50">
-<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
-<!-- Brand -->
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary text-[32px] icon-fill">mosque</span>
-<span class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed">
-                    BSI Tabungan Haji
-                </span>
+<nav class="fixed top-0 w-full z-50 shadow-sm bg-surface dark:bg-inverse-surface">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim tracking-tight">BSI Haji</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-on-surface-variant dark:text-on-tertiary-fixed-variant hover:text-primary transition-colors font-body-md text-body-md py-1" href="#">Dashboard</a>
+<a class="text-on-surface-variant dark:text-on-tertiary-fixed-variant hover:text-primary transition-colors font-body-md text-body-md py-1" href="#">Mutasi</a>
+<a class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary dark:border-primary-fixed-dim pb-1 font-body-md text-body-md" href="#">Estimasi</a>
 </div>
-<!-- Navigation Links (Desktop) -->
-<nav class="hidden md:flex gap-8">
-<!-- Dashboard -->
-<a class="text-on-surface-variant dark:text-outline-variant text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-all duration-200" href="#">
-                    Dashboard
-                </a>
-<!-- Mutasi -->
-<a class="text-on-surface-variant dark:text-outline-variant text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-all duration-200" href="#">
-                    Mutasi
-                </a>
-<!-- Estimasi (ACTIVE) -->
-<a class="text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1 text-label-md hover:text-primary dark:hover:text-primary-fixed transition-all duration-200" href="#">
-                    Estimasi
-                </a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-container-low dark:hover:bg-on-tertiary-container transition-all rounded-full active:scale-95 duration-150 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low dark:hover:bg-on-tertiary-container transition-all rounded-full active:scale-95 duration-150 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
 </nav>
-<!-- Trailing Actions -->
-<div class="flex items-center gap-4">
-<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-all duration-200 cursor-pointer active:scale-95 transition-transform">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-all duration-200 cursor-pointer active:scale-95 transition-transform">
-<span class="material-symbols-outlined">help_outline</span>
-</button>
-<img alt="User profile avatar" class="w-10 h-10 rounded-full border border-outline-variant" data-alt="A professional headshot of a person, serving as a user profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTfyMVkAzNlX44u3g3WUoi84qkfPk5o3qRProxKo4NiNuVeZiWxQ6ZUyyZ1dyT7jcVjjtGfXvT8oSREach_8kYPZnLHkB3Xj6lc7ndz1_6o9psJoqGuKK8DG5W-t-kyxN9H1M_8nvXwiIjRH-01oYCKakWcpRmd5y2bHt5f-Hoxt5aIaVKwyf4yKF4Wn-haSKCYfKxJPxaEiyqjaqyd_z9-Jag11MMBWoD-PAfZ24MC3gcVp-NIq3hvv4qa-qPmnMYkoic-YJfNBU"/>
-</div>
-</div>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
+<!-- Page Header -->
+<header class="mb-12">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary mb-2">Estimasi Keberangkatan</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Pantau perjalanan spiritual Anda menuju Baitullah.</p>
 </header>
-<!-- Main Content -->
-<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 space-y-20">
-<!-- Header Section -->
-<section class="space-y-2">
-<h1 class="font-headline-lg text-headline-lg text-on-surface">Assalamu'alaikum, Ahmad</h1>
-<p class="font-body-lg text-body-lg text-on-surface-variant">Berikut adalah rincian estimasi keberangkatan dan riwayat tabungan haji Anda.</p>
-</section>
-<!-- Bento Grid: Summary & Estimation -->
-<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-<!-- Account Summary Card -->
-<div class="bg-primary text-on-primary rounded-2xl p-6 shadow-sm flex flex-col justify-between relative overflow-hidden md:col-span-1 min-h-[200px]">
-<!-- Background Pattern (Subtle) -->
-<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
-<div class="z-10">
-<p class="font-label-md text-label-md text-primary-fixed-dim mb-1">Total Saldo Tabungan</p>
-<h2 class="font-headline-lg text-headline-lg mb-6">Rp 10.000.000</h2>
-<div class="space-y-1">
-<p class="font-label-sm text-label-sm text-primary-fixed-dim">Nomor Rekening</p>
-<p class="font-body-md text-body-md font-medium tracking-widest">7123 4567 89</p>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Primary Focus -->
+<div class="lg:col-span-8 flex flex-col gap-8">
+<!-- Porsi Progress Section (The Haji Progress Card) -->
+<section class="bg-surface-container-lowest rounded-2xl p-8 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] relative overflow-hidden">
+<div class="absolute top-0 right-0 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[200px]" data-icon="mosque" style="font-variation-settings: 'FILL' 1;">mosque</span>
 </div>
-</div>
-<div class="z-10 mt-6 flex gap-2">
-<button class="bg-surface-container-lowest text-primary font-label-md text-label-md py-2 px-4 rounded-lg hover:bg-surface transition-colors w-full text-center">
-                        Top Up
-                    </button>
-</div>
-</div>
-<!-- Detailed Estimation Card (Haji Progress) -->
-<div class="bg-surface-container-lowest rounded-2xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)] md:col-span-2 border border-outline-variant/30 flex flex-col justify-between">
-<div class="flex justify-between items-start mb-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 z-10 relative">
 <div>
-<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Estimasi Keberangkatan</h3>
-<div class="inline-flex items-center gap-1.5 bg-secondary-fixed/20 text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">
-<span class="material-symbols-outlined text-[16px]">pending_actions</span>
-                            Status Porsi: BELUM PORSI
-                        </div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Target Porsi Haji</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Kumpulkan saldo untuk mendapatkan nomor porsi.</p>
 </div>
-<div class="text-right">
-<p class="font-label-md text-label-md text-on-surface-variant mb-1">Tahun Estimasi</p>
-<p class="font-display-lg text-display-lg text-primary">2053</p>
+<div class="mt-4 md:mt-0 text-right">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Target</p>
+<p class="font-headline-lg text-headline-lg text-primary">Rp 25.000.000</p>
 </div>
-</div>
-<!-- Progress Section -->
-<div class="space-y-4">
-<div class="flex justify-between font-label-md text-label-md text-on-surface">
-<span>Terkumpul: Rp 10.000.000</span>
-<span>Target Setoran Awal: Rp 25.000.000</span>
 </div>
 <!-- Progress Bar -->
-<div class="w-full bg-surface-variant rounded-full h-3 overflow-hidden">
-<div class="bg-secondary-container h-full rounded-full" style="width: 40%"></div>
+<div class="mb-6 z-10 relative">
+<div class="flex justify-between mb-2">
+<span class="font-label-md text-label-md text-primary font-bold">40% Terkumpul</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sisa: Rp 15.000.000</span>
 </div>
-<div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline-variant/30">
-<div>
-<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Sisa Waktu Tunggu</p>
-<p class="font-headline-md text-headline-md text-on-surface">25 Tahun</p>
+<div class="h-4 bg-secondary-fixed rounded-full overflow-hidden w-full relative">
+<div class="h-full bg-secondary-fixed-dim rounded-full absolute top-0 left-0 transition-all duration-1000 ease-in-out" style="width: 40%;"></div>
 </div>
-<div>
-<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Sisa Pelunasan (Estimasi)</p>
-<p class="font-headline-md text-headline-md text-on-surface">Rp 40.000.000</p>
+<div class="mt-2 text-right">
+<span class="font-body-md text-body-md text-on-surface font-semibold">Rp 10.000.000</span>
 </div>
+</div>
+</section>
+<!-- Timeline/Roadmap Visual -->
+<section class="bg-surface-container-lowest rounded-2xl p-8 shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-8">Peta Perjalanan Haji Anda</h3>
+<div class="relative flex flex-col md:flex-row justify-between">
+<!-- Connecting Line -->
+<div class="absolute left-[23px] top-8 bottom-8 w-[2px] bg-surface-variant md:left-8 md:right-8 md:top-[23px] md:bottom-auto md:h-[2px] md:w-auto z-0"></div>
+<!-- Step 1: Current -->
+<div class="flex md:flex-col items-center gap-4 md:gap-3 z-10 relative mb-8 md:mb-0 bg-surface-container-lowest py-2 md:px-4 flex-1">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-sm shrink-0">
+<span class="material-symbols-outlined text-on-primary" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-sm text-label-sm text-primary mb-1 uppercase tracking-wider">Saat Ini</p>
+<p class="font-headline-md text-headline-md text-on-surface">2026</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Menabung</p>
+</div>
+</div>
+<!-- Step 2: Dapat Porsi -->
+<div class="flex md:flex-col items-center gap-4 md:gap-3 z-10 relative mb-8 md:mb-0 bg-surface-container-lowest py-2 md:px-4 flex-1">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed-dim border-4 border-surface-container-lowest flex items-center justify-center shadow-sm shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed-variant" data-icon="description">description</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-sm text-label-sm text-secondary mb-1 uppercase tracking-wider">Estimasi</p>
+<p class="font-headline-md text-headline-md text-on-surface">2028</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Dapat Porsi</p>
+</div>
+</div>
+<!-- Step 3: Berangkat -->
+<div class="flex md:flex-col items-center gap-4 md:gap-3 z-10 relative bg-surface-container-lowest py-2 md:px-4 flex-1">
+<div class="w-12 h-12 rounded-full bg-surface-variant border-4 border-surface-container-lowest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="flight_takeoff">flight_takeoff</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Estimasi</p>
+<p class="font-headline-md text-headline-md text-on-surface">2053</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Berangkat</p>
 </div>
 </div>
 </div>
 </section>
-<!-- Mutation History Section -->
-<section class="space-y-6">
-<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-<h3 class="font-headline-md text-headline-md text-on-surface">Riwayat Mutasi</h3>
-<!-- Filters -->
-<div class="flex gap-2">
-<button class="inline-flex items-center gap-2 border border-outline-variant bg-surface-container-lowest text-on-surface-variant px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined text-[18px]">calendar_today</span>
-                        Bulan Ini
-                        <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
-</button>
-<button class="inline-flex items-center gap-2 border border-outline-variant bg-surface-container-lowest text-on-surface-variant px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined text-[18px]">filter_list</span>
-                        Filter
-                    </button>
 </div>
+<!-- Right Column: Secondary Insights & Actions -->
+<div class="lg:col-span-4 flex flex-col gap-8">
+<!-- Financial Analysis Card -->
+<section class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="insights">insights</span>
+<h3 class="font-headline-md text-headline-md text-on-surface text-lg">Analisis Tabungan</h3>
 </div>
-<!-- Table Container -->
-<div class="bg-surface-container-lowest rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden">
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="bg-surface border-b border-outline-variant font-label-md text-label-md text-on-surface-variant">
-<th class="py-4 px-6 font-semibold">Tanggal</th>
-<th class="py-4 px-6 font-semibold">Tipe</th>
-<th class="py-4 px-6 font-semibold">Metode</th>
-<th class="py-4 px-6 font-semibold text-right">Nominal</th>
-<th class="py-4 px-6 font-semibold text-right">Saldo</th>
-</tr>
-</thead>
-<tbody class="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/50">
-<!-- Row 1 -->
-<tr class="hover:bg-surface transition-colors group">
-<td class="py-4 px-6 text-on-surface-variant">28/05/2026</td>
-<td class="py-4 px-6">
-<span class="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-0.5 rounded font-label-sm">
-                                        SETOR
-                                    </span>
-</td>
-<td class="py-4 px-6 text-on-surface-variant">Transfer BSI Mobile</td>
-<td class="py-4 px-6 text-right font-medium text-primary">+Rp 1.000.000</td>
-<td class="py-4 px-6 text-right text-on-surface-variant">Rp 10.000.000</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-surface transition-colors group">
-<td class="py-4 px-6 text-on-surface-variant">15/04/2026</td>
-<td class="py-4 px-6">
-<span class="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-0.5 rounded font-label-sm">
-                                        SETOR
-                                    </span>
-</td>
-<td class="py-4 px-6 text-on-surface-variant">Auto-Debet</td>
-<td class="py-4 px-6 text-right font-medium text-primary">+Rp 500.000</td>
-<td class="py-4 px-6 text-right text-on-surface-variant">Rp 9.000.000</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-surface transition-colors group">
-<td class="py-4 px-6 text-on-surface-variant">02/03/2026</td>
-<td class="py-4 px-6">
-<span class="inline-flex items-center gap-1 bg-error/10 text-error px-2 py-0.5 rounded font-label-sm">
-                                        BIAYA
-                                    </span>
-</td>
-<td class="py-4 px-6 text-on-surface-variant">Biaya Administrasi</td>
-<td class="py-4 px-6 text-right font-medium text-error">-Rp 15.000</td>
-<td class="py-4 px-6 text-right text-on-surface-variant">Rp 8.500.000</td>
-</tr>
-<!-- Row 4 -->
-<tr class="hover:bg-surface transition-colors group">
-<td class="py-4 px-6 text-on-surface-variant">28/02/2026</td>
-<td class="py-4 px-6">
-<span class="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-0.5 rounded font-label-sm">
-                                        SETOR
-                                    </span>
-</td>
-<td class="py-4 px-6 text-on-surface-variant">Setor Tunai Cabang</td>
-<td class="py-4 px-6 text-right font-medium text-primary">+Rp 8.515.000</td>
-<td class="py-4 px-6 text-right text-on-surface-variant">Rp 8.515.000</td>
-</tr>
-</tbody>
-</table>
+<div class="space-y-4">
+<div class="flex justify-between items-center pb-4 border-b border-surface-variant">
+<span class="font-body-md text-body-md text-on-surface-variant">Rata-rata Setoran/Bln</span>
+<span class="font-headline-md text-headline-md text-on-surface text-base">Rp 1.000.000</span>
 </div>
-<!-- Pagination -->
-<div class="bg-surface border-t border-outline-variant px-6 py-4 flex items-center justify-between">
-<span class="font-label-sm text-label-sm text-on-surface-variant">Menampilkan 1-4 dari 24 transaksi</span>
-<div class="flex gap-2">
-<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container disabled:opacity-50" disabled="">
-<span class="material-symbols-outlined text-[20px]">chevron_left</span>
-</button>
-<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container">
-<span class="material-symbols-outlined text-[20px]">chevron_right</span>
-</button>
-</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Waktu Capai Porsi</span>
+<span class="font-headline-md text-headline-md text-primary text-base">~15 Bulan lagi</span>
 </div>
 </div>
 </section>
+<!-- Sisa Pelunasan Section -->
+<section class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/30">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+<h3 class="font-headline-md text-headline-md text-on-surface text-lg">Estimasi Pelunasan BPIH</h3>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 mb-6">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">Total Estimasi BPIH</p>
+<p class="font-headline-md text-headline-md text-on-surface">Rp 50.000.000</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2 italic">*Berdasarkan standar BPIH terkini</p>
+</div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-body-md text-body-md text-on-surface">Sisa Kekurangan:</span>
+<span class="font-headline-md text-headline-md text-error font-bold">Rp 40.000.000</span>
+</div>
+</section>
+<!-- CTA Action -->
+<button class="w-full bg-primary-container text-on-primary-fixed rounded-lg py-4 px-6 font-label-md text-label-md font-bold hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+                    Optimalkan Tabungan
+                </button>
+</div>
+</div>
 </main>
 <!-- Footer -->
-<footer class="bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline mt-auto">
-<div class="w-full py-12 px-margin-desktop flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto gap-8">
-<!-- Brand & Copyright -->
-<div class="flex flex-col gap-2 items-center md:items-start text-center md:text-left">
-<span class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface">
-                    BSI Tabungan Haji
-                </span>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-lg">
-                    © 2024 PT Bank Syariah Indonesia Tbk. Berizin dan Diawasi oleh Otoritas Jasa Keuangan. Peserta Penjaminan LPS.
-                </p>
+<footer class="bg-surface-container-highest dark:bg-on-tertiary-container border-t border-outline-variant dark:border-outline w-full mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center py-8 px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto gap-gutter">
+<div class="font-headline-sm text-headline-sm font-bold text-primary mb-4 md:mb-0">
+                BSI Haji
+            </div>
+<div class="flex flex-wrap justify-center gap-6 mb-4 md:mb-0">
+<a class="text-on-surface-variant dark:text-tertiary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors cursor-pointer font-label-md text-label-md" href="#">Syarat &amp; Ketentuan</a>
+<a class="text-on-surface-variant dark:text-tertiary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors cursor-pointer font-label-md text-label-md" href="#">Kebijakan Privasi</a>
+<a class="text-on-surface-variant dark:text-tertiary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors cursor-pointer font-label-md text-label-md" href="#">Hubungi Kami</a>
+<a class="text-on-surface-variant dark:text-tertiary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors cursor-pointer font-label-md text-label-md" href="#">Lokasi Cabang</a>
 </div>
-<!-- Links -->
-<div class="inline-flex flex-wrap justify-center items-center gap-4">
-<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed underline transition-all" href="#">
-                    Pusat Bantuan
-                </a>
-<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed underline transition-all" href="#">
-                    Kebijakan Privasi
-                </a>
-<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed underline transition-all" href="#">
-                    Syarat &amp; Ketentuan
-                </a>
-<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed underline transition-all" href="#">
-                    Lokasi Cabang
-                </a>
-</div>
+<div class="font-label-md text-label-md text-on-surface dark:text-on-tertiary-fixed text-center md:text-right text-sm">
+                © 2024 Bank Syariah Indonesia. Member of LPS. Berizin &amp; Diawasi oleh OJK.
+            </div>
 </div>
 </footer>
 </body></html>

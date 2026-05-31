@@ -1,96 +1,21 @@
+import type {
+  AuthNasabah,
+  CreateNasabahPayload,
+  Estimasi,
+  ListResponse,
+  LoginSuccess,
+  Nasabah,
+  NasabahWithTabungan,
+  RegisterPayload,
+  TabunganHaji,
+  Transaksi,
+  UpdateNasabahPayload,
+} from "@/lib/types";
+
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1";
 
 const HEALTH_URL = API_URL.replace("/api/v1", "/health");
-
-export async function checkHealth(): Promise<boolean> {
-  try {
-    const res = await fetch(HEALTH_URL);
-    if (!res.ok) return false;
-    return (await res.json())?.status == "ok";
-  } catch {
-    return false;
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* Tipe data (selaras kontrak backend tabungan-haji-api)               */
-/* ------------------------------------------------------------------ */
-
-export interface AuthNasabah {
-  id: string;
-  nama: string;
-  email: string;
-  role: "NASABAH" | "ADMIN";
-}
-
-export interface Profil extends AuthNasabah {
-  nik: string;
-  nomorHp: string;
-  createdAt: string;
-  updatedAt: string;
-  tokenRole?: string;
-}
-
-export interface Tabungan {
-  id: string;
-  nasabahId: string;
-  nomorRekening: string;
-  saldo: string; // BigInt diserialisasi sebagai string
-  status: string;
-  dibukaAt: string;
-}
-
-export interface Transaksi {
-  id: string;
-  tabunganId: string;
-  jenis: string; // SETOR | TARIK
-  nominal: string;
-  saldoSebelum: string;
-  saldoSesudah: string;
-  referensi: string;
-  metode: string | null;
-  waktu: string;
-}
-
-export interface MutasiResult {
-  data: Transaksi[];
-  total: number;
-  limit: number;
-  offset: number;
-}
-
-export interface Estimasi {
-  tabungan: {
-    id: string;
-    nomorRekening: string;
-    saldo: string;
-    status: string;
-    nasabah: { id: string; nama: string; nik: string };
-  };
-  estimasi: {
-    statusPorsi: "SUDAH_PORSI" | "BELUM_PORSI";
-    sudahPorsi: boolean;
-    kekuranganUntukPorsi: string;
-    bulanUntukPorsi: number;
-    sisaPelunasan: string;
-    tahunDapatPorsi: number;
-    tahunEstimasiBerangkat: number;
-    waitingYears: number;
-  };
-  parameter: {
-    setoranAwalBpih: string;
-    bpihTotal: string;
-    waitingYears: number;
-    avgSetorBulananDigunakan: string;
-    sumberRataSetor: string;
-    jumlahTransaksiSetor6Bulan: number;
-  };
-}
-
-export type ApiResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: string; status: number; code?: string };
 
 /* ------------------------------------------------------------------ */
 /* Session (token JWT disimpan di localStorage)                        */
@@ -126,9 +51,29 @@ export function clearSession(): void {
 }
 
 /* ------------------------------------------------------------------ */
-/* HTTP helpers                                                        */
+/* ApiError — error terstruktur dengan detail validasi per-field       */
 /* ------------------------------------------------------------------ */
 
+export class ApiError extends Error {
+  readonly status: number;
+  readonly code?: string;
+  /** Detail validasi per-field dari backend, mis. { nik: ["NIK harus 16 digit"] }. */
+  readonly details?: Record<string, string[]>;
+
+  constructor(
+    message: string,
+    status: number,
+    opts: { code?: string; details?: Record<string, string[]> } = {}
+  ) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.code = opts.code;
+    this.details = opts.details;
+  }
+}
+
+/** Ambil pesan paling relevan dari body error backend. */
 function messageFromBody(body: unknown, fallback: string): string {
   if (body && typeof body === "object") {
     const b = body as Record<string, unknown>;
@@ -142,152 +87,148 @@ function messageFromBody(body: unknown, fallback: string): string {
   return fallback;
 }
 
-async function authFetch<T>(
+function fallbackFor(status: number): string {
+  if (status === 401) return "Sesi berakhir, silakan masuk kembali.";
+  if (status === 0) return "Tidak dapat terhubung ke server.";
+  return "Terjadi kesalahan, silakan coba lagi.";
+}
+
+/* ------------------------------------------------------------------ */
+/* Fetch wrapper + api client                                          */
+/* ------------------------------------------------------------------ */
+
+interface RequestOptions {
+  /** Lampirkan Bearer token dari sesi (default: true). */
+  auth?: boolean;
+  headers?: Record<string, string>;
+  /** Body request; otomatis di-JSON.stringify dan diberi Content-Type. */
+  body?: unknown;
+}
+
+async function request<T>(
+  method: string,
   path: string,
-  init: RequestInit = {}
-): Promise<ApiResult<T>> {
-  const token = getToken();
-  if (!token) {
-    return { ok: false, status: 401, error: "Sesi tidak ditemukan." };
-  }
+  opts: RequestOptions = {}
+): Promise<T> {
+  const { auth = true, headers = {}, body } = opts;
+  const token = auth ? getToken() : null;
+
+  const finalHeaders: Record<string, string> = { ...headers };
+  if (body !== undefined) finalHeaders["Content-Type"] = "application/json";
+  if (token) finalHeaders["Authorization"] = `Bearer ${token}`;
 
   let res: Response;
   try {
     res = await fetch(`${API_URL}${path}`, {
-      ...init,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        ...(init.headers ?? {}),
-      },
+      method,
+      headers: finalHeaders,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch {
-    return {
-      ok: false,
-      status: 0,
-      error: "Tidak dapat terhubung ke server.",
-    };
+    throw new ApiError(fallbackFor(0), 0);
   }
 
-  if (res.status === 204) {
-    return { ok: true, data: undefined as T };
-  }
+  // 204 No Content → tidak ada body untuk diparse.
+  if (res.status === 204) return undefined as T;
 
-  const body = await res.json().catch(() => null);
+  const data = await res.json().catch(() => null);
 
-  if (res.status === 401) {
-    // Token kadaluwarsa / revoked / invalid → bersihkan sesi
+  if (res.ok) return data as T;
+
+  const code = (data as { error?: string } | null)?.error;
+  const details = (data as { details?: Record<string, string[]> } | null)
+    ?.details;
+
+  // Auto-logout: 401 saat ada token = sesi kedaluwarsa/dicabut.
+  // (401 tanpa token, mis. login gagal, tidak memicu redirect.)
+  if (res.status === 401 && token) {
     clearSession();
-    return {
-      ok: false,
-      status: 401,
-      code: (body as { error?: string })?.error,
-      error: messageFromBody(body, "Sesi berakhir, silakan masuk kembali."),
-    };
+    if (typeof window !== "undefined") window.location.assign("/login");
   }
 
-  if (!res.ok) {
-    return {
-      ok: false,
-      status: res.status,
-      code: (body as { error?: string })?.error,
-      error: messageFromBody(body, "Terjadi kesalahan, silakan coba lagi."),
-    };
-  }
+  throw new ApiError(messageFromBody(data, fallbackFor(res.status)), res.status, {
+    code,
+    details,
+  });
+}
 
-  return { ok: true, data: body as T };
+export const api = {
+  get: <T>(path: string, opts?: RequestOptions) =>
+    request<T>("GET", path, opts),
+  post: <T>(path: string, body?: unknown, opts?: RequestOptions) =>
+    request<T>("POST", path, { ...opts, body }),
+  put: <T>(path: string, body?: unknown, opts?: RequestOptions) =>
+    request<T>("PUT", path, { ...opts, body }),
+  delete: <T>(path: string, opts?: RequestOptions) =>
+    request<T>("DELETE", path, opts),
+};
+
+/* ------------------------------------------------------------------ */
+/* Helper konsumen: pemetaan error untuk UI                            */
+/* ------------------------------------------------------------------ */
+
+/** Ambil pesan validasi pertama per-field dari ApiError (untuk ditaruh di bawah input). */
+export function getFieldErrors(err: unknown): Record<string, string> {
+  if (err instanceof ApiError && err.details) {
+    const out: Record<string, string> = {};
+    for (const [field, msgs] of Object.entries(err.details)) {
+      if (Array.isArray(msgs) && typeof msgs[0] === "string") {
+        out[field] = msgs[0];
+      }
+    }
+    return out;
+  }
+  return {};
+}
+
+/** Pesan ramah untuk ditampilkan; generik bila error bukan ApiError. */
+export function errorMessage(
+  err: unknown,
+  fallback = "Terjadi kesalahan, silakan coba lagi."
+): string {
+  return err instanceof ApiError ? err.message : fallback;
+}
+
+/* ------------------------------------------------------------------ */
+/* Health check                                                        */
+/* ------------------------------------------------------------------ */
+
+export async function checkHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(HEALTH_URL);
+    if (!res.ok) return false;
+    return (await res.json())?.status === "ok";
+  } catch {
+    return false;
+  }
 }
 
 /* ------------------------------------------------------------------ */
 /* Auth & Nasabah                                                      */
 /* ------------------------------------------------------------------ */
 
-export interface LoginSuccess {
-  token: string;
-  tokenType: string;
-  expiresIn: number;
-  expiresAt: string;
-  nasabah: AuthNasabah;
+export function login(email: string, password: string): Promise<LoginSuccess> {
+  return api.post<LoginSuccess>(
+    "/auth/login",
+    { email, password },
+    { auth: false }
+  );
 }
 
-export async function login(
-  email: string,
-  password: string
-): Promise<ApiResult<LoginSuccess>> {
-  try {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const body = await res.json().catch(() => null);
-    if (!res.ok) {
-      return {
-        ok: false,
-        status: res.status,
-        code: (body as { error?: string })?.error,
-        error: messageFromBody(body, "Email atau kata sandi salah."),
-      };
-    }
-    return { ok: true, data: body as LoginSuccess };
-  } catch {
-    return {
-      ok: false,
-      status: 0,
-      error: "Tidak dapat terhubung ke server. Silakan coba lagi.",
-    };
-  }
+export function register(payload: RegisterPayload): Promise<{ id: string }> {
+  return api.post<{ id: string }>("/nasabah", payload, { auth: false });
 }
 
-export interface RegisterPayload {
-  nik: string;
-  nama: string;
-  email: string;
-  nomorHp: string;
-  password: string;
-}
-
-export async function register(
-  payload: RegisterPayload
-): Promise<ApiResult<{ id: string }>> {
-  try {
-    const res = await fetch(`${API_URL}/nasabah`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const body = await res.json().catch(() => null);
-    if (!res.ok) {
-      // 409 dari unique constraint (NIK/email sudah dipakai) → pesan ramah
-      const fallback =
-        res.status === 409
-          ? "NIK atau email sudah terdaftar."
-          : "Pendaftaran gagal, periksa kembali data Anda.";
-      return {
-        ok: false,
-        status: res.status,
-        code: (body as { error?: string })?.error,
-        error: messageFromBody(body, fallback),
-      };
-    }
-    return { ok: true, data: body as { id: string } };
-  } catch {
-    return {
-      ok: false,
-      status: 0,
-      error: "Tidak dapat terhubung ke server. Silakan coba lagi.",
-    };
-  }
-}
-
-export function me(): Promise<ApiResult<Profil>> {
-  return authFetch<Profil>("/auth/me");
+export function me(): Promise<Nasabah> {
+  return api.get<Nasabah>("/auth/me");
 }
 
 export async function logout(): Promise<void> {
-  // Best-effort revoke di server; sesi lokal tetap dibersihkan
+  // Best-effort revoke di server; sesi lokal tetap dibersihkan.
   try {
-    await authFetch("/auth/logout", { method: "POST" });
+    await api.post("/auth/logout");
+  } catch {
+    // Abaikan: tujuan utama logout adalah membersihkan sesi lokal.
   } finally {
     clearSession();
   }
@@ -297,27 +238,26 @@ export async function logout(): Promise<void> {
 /* Tabungan Haji                                                       */
 /* ------------------------------------------------------------------ */
 
-export function listMyTabungan(): Promise<ApiResult<{ data: Tabungan[] }>> {
-  return authFetch<{ data: Tabungan[] }>("/tabungan-haji");
+export function listMyTabungan(): Promise<{ data: TabunganHaji[] }> {
+  return api.get<{ data: TabunganHaji[] }>("/tabungan-haji");
 }
 
-export function openAccount(nasabahId: string): Promise<ApiResult<Tabungan>> {
-  return authFetch<Tabungan>("/tabungan-haji", {
-    method: "POST",
-    body: JSON.stringify({ nasabahId }),
-  });
+export function openAccount(nasabahId: string): Promise<TabunganHaji> {
+  return api.post<TabunganHaji>("/tabungan-haji", { nasabahId });
 }
 
-export function getEstimasi(tabunganId: string): Promise<ApiResult<Estimasi>> {
-  return authFetch<Estimasi>(`/tabungan-haji/${tabunganId}/estimasi-keberangkatan`);
+export function getEstimasi(tabunganId: string): Promise<Estimasi> {
+  return api.get<Estimasi>(
+    `/tabungan-haji/${tabunganId}/estimasi-keberangkatan`
+  );
 }
 
 export function getMutasi(
   tabunganId: string,
   limit = 10,
   offset = 0
-): Promise<ApiResult<MutasiResult>> {
-  return authFetch<MutasiResult>(
+): Promise<ListResponse<Transaksi>> {
+  return api.get<ListResponse<Transaksi>>(
     `/tabungan-haji/${tabunganId}/mutasi?limit=${limit}&offset=${offset}`
   );
 }
@@ -327,10 +267,64 @@ export function setor(
   nominal: number,
   metode: string | undefined,
   idempotencyKey: string
-): Promise<ApiResult<Transaksi>> {
-  return authFetch<Transaksi>(`/tabungan-haji/${tabunganId}/setor`, {
-    method: "POST",
-    headers: { "Idempotency-Key": idempotencyKey },
-    body: JSON.stringify({ nominal, ...(metode ? { metode } : {}) }),
-  });
+): Promise<Transaksi> {
+  return api.post<Transaksi>(
+    `/tabungan-haji/${tabunganId}/setor`,
+    { nominal, ...(metode ? { metode } : {}) },
+    { headers: { "Idempotency-Key": idempotencyKey } }
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Admin — manajemen nasabah                                           */
+/* Catatan: endpoint mengikuti konvensi REST standar. Sesuaikan path   */
+/* di sini bila kontrak backend berbeda.                               */
+/* ------------------------------------------------------------------ */
+
+export function listNasabah(
+  limit = 10,
+  offset = 0
+): Promise<ListResponse<Nasabah>> {
+  return api.get<ListResponse<Nasabah>>(
+    `/nasabah?limit=${limit}&offset=${offset}`
+  );
+}
+
+export function getNasabah(id: string): Promise<NasabahWithTabungan> {
+  return api.get<NasabahWithTabungan>(`/nasabah/${id}`);
+}
+
+export function createNasabah(
+  payload: CreateNasabahPayload
+): Promise<{ id: string }> {
+  return api.post<{ id: string }>("/nasabah", payload);
+}
+
+export function updateNasabah(
+  id: string,
+  payload: UpdateNasabahPayload
+): Promise<Nasabah> {
+  return api.put<Nasabah>(`/nasabah/${id}`, payload);
+}
+
+export function deleteNasabah(id: string): Promise<void> {
+  return api.delete<void>(`/nasabah/${id}`);
+}
+
+/** Daftar rekening tabungan milik seorang nasabah (akses admin). */
+export function adminGetTabunganByNasabah(
+  nasabahId: string
+): Promise<{ data: TabunganHaji[] }> {
+  return api.get<{ data: TabunganHaji[] }>(
+    `/tabungan-haji?nasabahId=${nasabahId}`
+  );
+}
+
+/** Mutasi sebuah rekening (akses admin) — alias getMutasi untuk kejelasan. */
+export function adminGetMutasi(
+  tabunganId: string,
+  limit = 5,
+  offset = 0
+): Promise<ListResponse<Transaksi>> {
+  return getMutasi(tabunganId, limit, offset);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { setor } from "@/lib/api";
+import { errorMessage, setor } from "@/lib/api";
 import { toRupiah } from "@/lib/format";
 
 const MIN_SETOR = 100_000;
@@ -35,13 +35,13 @@ export function SetorModal({
     }
 
     setSubmitting(true);
-    const result = await setor(tabunganId, numeric, metode, idempotencyKey);
-    if (!result.ok) {
-      setError(result.error);
+    try {
+      await setor(tabunganId, numeric, metode, idempotencyKey);
+      onSuccess();
+    } catch (err) {
+      setError(errorMessage(err, "Setoran gagal, silakan coba lagi."));
       setSubmitting(false);
-      return;
     }
-    onSuccess();
   }
 
   return (

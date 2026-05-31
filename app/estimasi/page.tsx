@@ -5,12 +5,12 @@ import { AppFooter } from "@/components/app-footer";
 import { EstimasiView } from "@/components/estimasi-view";
 
 export const metadata: Metadata = {
-  title: "Estimasi & Mutasi — BSI Tabungan Haji",
+  title: "Estimasi Keberangkatan — BSI Tabungan Haji",
 };
 
 export default function EstimasiPage() {
   return (
-    <AuthGuard>
+    <AuthGuard role="NASABAH">
       <div className="flex min-h-screen flex-col bg-surface text-on-surface">
         <AppNav />
         <EstimasiView />

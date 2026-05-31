@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manajemen Nasabah - BSI Haji Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#251a00",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "inverse-primary": "#59dacd",
+                        "tertiary-fixed": "#e4e2e1",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#ffdf99",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-surface-variant": "#3c4947",
+                        "surface-tint": "#006a62",
+                        "secondary": "#775a00",
+                        "surface-dim": "#d9dadb",
+                        "secondary-container": "#fecb44",
+                        "primary-container": "#00a99d",
+                        "primary": "#006a62",
+                        "outline-variant": "#bbc9c6",
+                        "on-secondary-fixed-variant": "#5a4300",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "inverse-surface": "#2e3132",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "background": "#f8f9fa",
+                        "tertiary-container": "#989696",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#003631",
+                        "secondary-fixed-dim": "#f2c03a",
+                        "on-secondary-container": "#715600",
+                        "tertiary": "#5f5e5e",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#2f2f2f",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "outline": "#6c7a77",
+                        "on-background": "#191c1d",
+                        "surface": "#f8f9fa",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed-dim": "#59dacd",
+                        "on-primary-fixed-variant": "#00504a",
+                        "primary-fixed": "#78f7e9",
+                        "on-primary-fixed": "#00201d",
+                        "surface-container-high": "#e7e8e9",
+                        "tertiary-fixed-dim": "#c8c6c6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-desktop": "64px",
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "42px", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .fill-icon { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container dark:bg-surface-container-high z-50 py-4">
+<div class="px-6 mb-8 flex items-center gap-3">
+<img alt="BSI Logo" class="w-10 h-10 rounded-full" data-alt="A clean, minimalist abstract logo design suitable for a modern Islamic financial institution, featuring geometric precision and a subtle color palette of deep greens and metallic golds on a pristine white background. The aesthetic is highly professional, conveying trust and stability within a corporate modern style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNnlA8I7-vWwHI_x83nAYhEN1XXKYGjaZ1Ma6Ny4T3pXOs5cb-wsfw1ExpEDdAjTifPSM09yntVMjvVFCQxaQSYyOLNTfXx_UQZ18QCS889JVohj3Oe8B7pl9VLnZalbEXGzzN4zttMX2MZNe6mso3x1RZ7hv5KPyvif9zQUbcLZujqBhhgq5OdTElhUWgj0cncHt8383Ozf8E4pVQB_c0Wx0HMVexx5Bdt7DNGn08keLXx4Y8WDl_YF4PBso1fjestwGwScm-rCs"/>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary">Haji Portal</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Enterprise Admin</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 duration-200 bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-lg mx-2" href="#">
+<span class="material-symbols-outlined fill-icon" data-icon="group" data-weight="fill">group</span>
+<span class="font-label-md text-label-md">Manage Customers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-highest dark:hover:bg-inverse-surface transition-all rounded-lg mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-highest dark:hover:bg-inverse-surface transition-all rounded-lg mx-2" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-label-md text-label-md">System Health</span>
+</a>
+</div>
+<div class="mt-auto px-4 pt-4 border-t border-surface-variant space-y-2">
+<button class="w-full flex items-center justify-center gap-2 py-2 px-4 bg-surface-container-highest text-on-surface rounded-lg font-label-md hover:bg-surface-dim transition-colors mb-4">
+<span class="material-symbols-outlined text-sm">download</span> Export Data
+            </button>
+<a class="flex items-center gap-3 px-4 py-2 duration-200 text-on-surface-variant hover:bg-surface-container-highest rounded-lg" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 duration-200 text-error hover:bg-error-container rounded-lg" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+<span class="font-label-sm text-label-sm">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 w-full sticky top-0 z-40 bg-surface-container-lowest dark:bg-inverse-surface h-16 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4">
+<!-- Mobile menu button (hidden on md) -->
+<button class="md:hidden text-on-surface p-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary hidden md:block">BSI Haji Admin</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 rounded-full bg-surface-container-low border-none focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest text-body-md text-on-surface w-64 transition-all" placeholder="Search..." type="text"/>
+</div>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full border border-surface-variant ml-2 cursor-pointer" data-alt="A professional headshot of an executive in a modern corporate setting. The lighting is soft and flattering, creating a polished and trustworthy appearance suitable for a high-end banking portal avatar. The background is slightly blurred to emphasize the subject." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-w4OYID0OW0HGFt1rU4m2Z3h4b3Eq2LDIZy4haDBtcz8WhkpqRh2jNkV6f4FL-KPN7li0XPFm3D6zn0JJmwNRZpArZ21tYaATkEB4nO83Vr1RZ2inGUruXiaGs0LU4HWUlNTgJZAJl0lt9ATdZNE_eWQyysRlhgG3UEkTD7maIJdlSasS46MxSfcLsVL0zdPsynwsG8HMMkVTkye_PZbJSgZmaKjmAPc7gJXhcZ1CmI-bfAm_BUf9qOnXB0W7RUuBsTKYY1OEMow"/>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-6 md:p-8 max-w-[container-max] mx-auto w-full flex-1">
+<!-- Page Header & Actions -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Manajemen Nasabah</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola data pendaftaran dan status nasabah Haji.</p>
+</div>
+<button class="bg-primary-container hover:bg-primary text-white px-6 py-3 rounded-lg font-label-md flex items-center gap-2 transition-colors shadow-sm self-start sm:self-auto">
+<span class="material-symbols-outlined text-sm font-bold">add</span>
+                    Tambah Nasabah
+                </button>
+</div>
+<!-- Filters & Search Bar -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] mb-6 flex flex-col md:flex-row gap-4 items-center justify-between border border-surface-variant/50">
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary-container text-body-md transition-all" placeholder="Cari berdasarkan Nama, NIK, atau Email..." type="text"/>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<span class="font-label-md text-on-surface-variant whitespace-nowrap">Filter Role:</span>
+<select class="w-full md:w-48 py-2.5 px-4 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary-container text-body-md font-medium text-on-surface cursor-pointer">
+<option value="all">Semua Role</option>
+<option value="NASABAH">NASABAH</option>
+<option value="ADMIN">ADMIN</option>
+</select>
+</div>
+</div>
+<!-- Data Table Container (Bento Style Card) -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] overflow-hidden border border-surface-variant/50">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-surface-variant/80">
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Nama Lengkap</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">NIK</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Email</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Role</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Tanggal Daftar</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant/50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">AH</div>
+<span class="font-label-md text-on-surface">Ahmad Hidayat</span>
+</div>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">3201012345678901</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">ahmad.h@example.com</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-fixed text-on-secondary-fixed">
+                                        NASABAH
+                                    </span>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">12 Okt 2023</td>
+<td class="py-4 px-6 text-right"><div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-primary-container hover:bg-primary-container/10 rounded-md transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-error hover:bg-error-container rounded-md transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div></td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">SF</div>
+<span class="font-label-md text-on-surface">Siti Fatimah</span>
+</div>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">3201098765432109</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">siti.f@example.com</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-fixed text-on-secondary-fixed">
+                                        NASABAH
+                                    </span>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">10 Okt 2023</td>
+<td class="py-4 px-6 text-right"><div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-primary-container hover:bg-primary-container/10 rounded-md transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-error hover:bg-error-container rounded-md transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div></td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container/20 text-on-tertiary-container flex items-center justify-center font-bold text-sm">BW</div>
+<span class="font-label-md text-on-surface">Budi Waluyo</span>
+</div>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">3201011122233344</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">budi.admin@bsi.co.id</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-tertiary-container text-on-tertiary-container">
+                                        ADMIN
+                                    </span>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">01 Jan 2023</td>
+<td class="py-4 px-6 text-right"><div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-primary-container hover:bg-primary-container/10 rounded-md transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-error hover:bg-error-container rounded-md transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div></td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">DR</div>
+<span class="font-label-md text-on-surface">Dewi Ratnasari</span>
+</div>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">3201055566677788</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">dewi.r@example.com</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-fixed text-on-secondary-fixed">
+                                        NASABAH
+                                    </span>
+</td>
+<td class="py-4 px-6 font-body-md text-on-surface-variant">28 Sep 2023</td>
+<td class="py-4 px-6 text-right"><div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-primary-container hover:bg-primary-container/10 rounded-md transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-error hover:bg-error-container rounded-md transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="bg-surface-container-lowest px-6 py-4 border-t border-surface-variant/50 flex items-center justify-between">
+<span class="font-body-md text-sm text-on-surface-variant">Menampilkan 1-4 dari 124 Nasabah</span>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded-md text-on-surface-variant hover:bg-surface-container disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-md bg-primary-container text-white font-label-md flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded-md text-on-surface hover:bg-surface-container font-label-md flex items-center justify-center">2</button>
+<button class="w-8 h-8 rounded-md text-on-surface hover:bg-surface-container font-label-md flex items-center justify-center">3</button>
+<span class="px-2 text-on-surface-variant">...</span>
+<button class="p-1 rounded-md text-on-surface-variant hover:bg-surface-container">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+<div class="bg-surface-container-lowest rounded-2xl max-w-md w-full shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="p-6">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Hapus Nasabah?</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+Apakah Anda yakin ingin menghapus data nasabah ini? Tindakan ini tidak dapat dibatalkan dan semua data terkait akan hilang dari sistem.
+</p>
+</div>
+<div class="px-6 py-4 bg-surface-container-low flex justify-end gap-3">
+<button class="px-4 py-2 font-label-md text-on-surface-variant hover:bg-surface-variant rounded-lg transition-colors">
+Batal
+</button>
+<button class="px-6 py-2 bg-error text-on-error font-label-md rounded-lg hover:bg-error/90 transition-colors shadow-sm">
+Hapus
+</button>
+</div>
+</div>
+</div></body></html>
